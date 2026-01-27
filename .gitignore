@@ -31,6 +31,10 @@ dist
 # Debug
 npm-debug.log*
 
+# editor 
+ .cursor
+ .agents
+
 # Misc
 .DS_Store
 *.pem
