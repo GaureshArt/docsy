@@ -32,8 +32,8 @@ dist
 npm-debug.log*
 
 # editor 
- .cursor
- .agents
+ .cursor/
+ .agents/
 
 # Misc
 .DS_Store
