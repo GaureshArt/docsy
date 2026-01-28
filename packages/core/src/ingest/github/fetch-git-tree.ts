@@ -15,6 +15,30 @@ function getOwnerAndRepoFromUrl(url: string): [string, string] {
     }
     return [parts[0], parts[1]];
 }
+
+/**
+ * Fetch complete git tree from the Github repository with Octokit 
+ * 
+ * Retrieves all files and directories from specified branch
+ * using GitHub's Git Tree API with recursive flag.
+ * 
+ *
+ * 
+ * @param url - Full Github repository URL (e.g., "https://github.com/owner/repo")
+ * @param branch - Branch name to fetch (default: "main")
+ * @returns Git tree response with all repository files
+ * @throws If URL format is invalid or API request fails
+ * 
+ * @example
+ * ```ts
+ * const tree = await fetchGitTree(
+ *   "https://github.com/vercel/next.js",
+ *   "canary"
+ * );
+ * console.log(`Found ${tree.tree.length} total files`);
+ * ```
+
+ */
 export async function fetchGitTree(url: string, branch: string = "main"): Promise<GitTreeResponse> {
     const repoPath = validateAndParseUrl(url);
     const octokit = octokitProvider;
