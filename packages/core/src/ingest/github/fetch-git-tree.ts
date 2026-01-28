@@ -1,4 +1,4 @@
-import { GitTreeResponse } from "./github.types.js";
+import { FetchGitTreeResponse, GitTreeResponse, RepositoryConfig } from "./github.types.js";
 import octokitProvider from "./octokit-provider.js";
 
 function validateAndParseUrl(url: string): string {
@@ -17,29 +17,37 @@ function getOwnerAndRepoFromUrl(url: string): [string, string] {
 }
 
 /**
- * Fetch complete git tree from the Github repository with Octokit 
- * 
- * Retrieves all files and directories from specified branch
- * using GitHub's Git Tree API with recursive flag.
- * 
+ * Fetches the complete Git tree of a GitHub repository using the Git Tree API.
  *
- * 
- * @param url - Full Github repository URL (e.g., "https://github.com/owner/repo")
- * @param branch - Branch name to fetch (default: "main")
- * @returns Git tree response with all repository files
- * @throws If URL format is invalid or API request fails
- * 
+ * This function retrieves all files and directories from the specified branch
+ * by calling GitHub’s `git.getTree` API with the `recursive` option enabled.
+ *
+ * Internally, the branch name is passed as `tree_sha`, which GitHub resolves
+ * to the latest commit on that branch.
+ *
+ * @param url - Full GitHub repository URL (e.g. "https://github.com/owner/repo")
+ * @param branch - Branch name to fetch the tree from (default: "main")
+ *
+ * @returns An object containing:
+ * - `tree`: the full Git tree response from GitHub
+ * - `repository`: repository metadata (owner, repo, branch)
+ *
+ * @throws 
+ * - If the repository URL format is invalid
+ * - If the GitHub API request fails or the branch does not exist
+ *
  * @example
  * ```ts
- * const tree = await fetchGitTree(
+ * const result = await fetchGitTree(
  *   "https://github.com/vercel/next.js",
  *   "canary"
  * );
- * console.log(`Found ${tree.tree.length} total files`);
+ *
+ * console.log(`Found ${result.tree.tree.length} files`);
  * ```
-
  */
-export async function fetchGitTree(url: string, branch: string = "main"): Promise<GitTreeResponse> {
+
+export async function fetchGitTree(url: string, branch: string = "main"): Promise<FetchGitTreeResponse> {
     const repoPath = validateAndParseUrl(url);
     const octokit = octokitProvider;
 
@@ -51,7 +59,14 @@ export async function fetchGitTree(url: string, branch: string = "main"): Promis
             tree_sha: branch,
             recursive: "true",
         });
-        return tree.data;
+        return {
+            tree: tree.data,
+            repository: {
+                owner,
+                repo,
+                branch
+            }
+        };
     } catch (error) {
         if (error instanceof Error) {
             throw new Error(
