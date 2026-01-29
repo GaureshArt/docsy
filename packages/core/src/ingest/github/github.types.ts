@@ -22,3 +22,13 @@ export interface GitTreeItem {
     size?: number;
     url?: string;
 }
+
+
+export interface RawFile {
+    path: string;
+    content: string;
+    url: string ;           
+    sha: string;         
+    size: number;
+    fetchedAt: Date;       
+}
