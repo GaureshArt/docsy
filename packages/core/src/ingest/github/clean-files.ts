@@ -7,6 +7,7 @@ const ZERO_WIDTH_CHARS = /[\u200B-\u200D\uFEFF]/g;
 const IMG_TAGS = /<img[^>]*>/gi;
 const EXCESSIVE_NEWLINES = /\n{3,}/g;
 const MULTIPLE_SPACES = /[ ]{2,}/g;
+const CODE_FENCE = /^\s*```/;
 
 /**
  * Create a new `RawFile` with cleaned content while preserving metadata.
@@ -37,7 +38,11 @@ function createRawFile(file: RawFile, cleanedContent: string): RawFile {
  * - Strip `<img>` tags (icons, badges, logos)
  * - Collapse excessive blank lines (3+ → 2)
  * - Remove multiple spaces (2+ → 1)
- * - Trim whitespace per line
+ * - Trim whitespace **only outside fenced code blocks**
+ *
+ *  Code block handling:
+ * - Lines inside fenced code blocks (``` … ```) are left untouched
+ * - Indentation and spacing inside code blocks are preserved exactly
  *
  * This function:
  * - Does NOT modify file metadata (path, sha, url, etc.)
@@ -56,19 +61,37 @@ function createRawFile(file: RawFile, cleanedContent: string): RawFile {
  */
 export function cleanFiles(uncleanFiles: RawFile[]): RawFile[] {
     const cleaned = uncleanFiles.map((file) => {
-        const cleanedContent = file.content
+        const lines = file.content
             .replace(WINDOWS_LINE_ENDINGS, '\n')
             .replace(TABS, ' ')
             .replace(BR_TAGS, ' ')
             .replace(ZERO_WIDTH_CHARS, '')
             .replace(IMG_TAGS, '')
             .replace(EXCESSIVE_NEWLINES, '\n\n')
-            .replace(MULTIPLE_SPACES, ' ')
-            .split('\n')
-            .map(line => line.trim())
+            .split('\n');
+
+        let inCodeBlock = false;
+
+        const cleanedContent = lines
+            .map((line) => {
+                if (CODE_FENCE.test(line)) {
+                    inCodeBlock = !inCodeBlock;
+                    return line.trimEnd();
+                }
+
+                if (inCodeBlock) {
+                    return line;
+                }
+
+                return line
+                    .replace(MULTIPLE_SPACES, ' ')
+                    .trim();
+            })
             .join('\n')
             .trim();
+
         return createRawFile(file, cleanedContent);
     });
+
     return cleaned;
 }
