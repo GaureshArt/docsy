@@ -4,6 +4,7 @@ export interface RepositoryConfig {
     branch:string;
 }
 
+
 export interface GitTreeResponse {
     sha: string;
     url?: string;
@@ -22,7 +23,11 @@ export interface GitTreeItem {
     size?: number;
     url?: string;
 }
-
+export interface PriorityRule {
+    score: number;
+    match: (path: string, segments: string[]) => boolean;
+  }
+  
 
 export interface RawFile {
     path: string;
@@ -32,3 +37,4 @@ export interface RawFile {
     size: number;
     fetchedAt: Date;       
 }
+
