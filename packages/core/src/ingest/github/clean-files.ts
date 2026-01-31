@@ -1,97 +1,157 @@
 import { RawFile } from "./github.types.js";
 
 const WINDOWS_LINE_ENDINGS = /\r\n/g;
-const TABS = /\t/g;
-const BR_TAGS = /<br\s*\/?>/gi;
 const ZERO_WIDTH_CHARS = /[\u200B-\u200D\uFEFF]/g;
+const BR_TAGS = /<br\s*\/?>/gi;
 const IMG_TAGS = /<img[^>]*>/gi;
-const EXCESSIVE_NEWLINES = /\n{3,}/g;
-const MULTIPLE_SPACES = /[ ]{2,}/g;
-const CODE_FENCE = /^\s*```/;
+const EXCESSIVE_NEWLINES = /\n{4,}/g;
+const MULTIPLE_SPACES = / {3,}/g;
+
+const CODE_FENCE = /^\s*```[\w-]*\s*$/;
+const TABLE_LINE = /^\s*\|.*\|\s*$/;
+const HEADING_LINE = /^#{1,6}\s+/;
+
+const LOW_VALUE_PATH_SEGMENTS = [
+  "/__tests__/",
+  "/fixtures/",
+  "/mocks/",
+];
+
+const LOREM_IPSUM_PATTERNS = [
+  /lorem ipsum/i,
+  /dolor sit amet/i,
+  /consectetur adipiscing/i,
+  /sed do eiusmod/i,
+  /ut labore et dolore/i,
+];
 
 /**
- * Create a new `RawFile` with cleaned content while preserving metadata.
+ * Determines whether a file path should be excluded from embedding
+ * due to being test, fixture, or mock-related content.
  *
- * This function acts as a safe factory:
- * - Guarantees the returned object conforms to `RawFile`
- * - Prevents accidental shape mismatches during refactors
- *
- * @param file - Original raw file with metadata
- * @param cleanedContent - Cleaned and normalized file content
- * @returns A new `RawFile` instance with updated content
+ * @param path - Repository-relative file path
+ * @returns True if the file is considered low-value
  */
-function createRawFile(file: RawFile, cleanedContent: string): RawFile {
-    return {
-        ...file,
-        content: cleanedContent,
-    };
+function isLowValuePath(path: string): boolean {
+  const normalized = path.toLowerCase();
+  return LOW_VALUE_PATH_SEGMENTS.some(segment =>
+    normalized.includes(segment),
+  );
 }
 
 /**
- * Clean and normalize raw file contents.
+ * Detects placeholder documentation based on repeated lorem ipsum markers.
+ * A minimum threshold is enforced to avoid accidental false positives.
  *
- * Cleaning rules:
- * - Normalize Windows line endings (`\r\n` → `\n`)
- * - Remove tab characters
- * - Remove `<br>` HTML tags (self-closing and normal)
- * - Remove zero-width Unicode characters
- * - Strip `<img>` tags (icons, badges, logos)
- * - Collapse excessive blank lines (3+ → 2)
- * - Remove multiple spaces (2+ → 1)
- * - Trim whitespace **only outside fenced code blocks**
- *
- *  Code block handling:
- * - Lines inside fenced code blocks (``` … ```) are left untouched
- * - Indentation and spacing inside code blocks are preserved exactly
- *
- * This function:
- * - Does NOT modify file metadata (path, sha, url, etc.)
- * - Preserves code blocks and markdown structure
- * - Returns a new array (does not mutate input)
- *
- * @param uncleanFiles - Raw files fetched from GitHub
- * @returns Cleaned raw files, safe for chunking and embedding
- *
- * @example
- * ```ts
- * const rawFiles = await fetchFileContent(docs, repoConfig);
- * const cleanedFiles = cleanFiles(rawFiles);
- * console.log(`Cleaned ${cleanedFiles.length} files`);
- * ```
+ * @param content - Raw file content
+ * @returns True if placeholder content is detected
  */
-export function cleanFiles(uncleanFiles: RawFile[]): RawFile[] {
-    const cleaned = uncleanFiles.map((file) => {
-        const lines = file.content
-            .replace(WINDOWS_LINE_ENDINGS, '\n')
-            .replace(TABS, ' ')
-            .replace(BR_TAGS, ' ')
-            .replace(ZERO_WIDTH_CHARS, '')
-            .replace(IMG_TAGS, '')
-            .replace(EXCESSIVE_NEWLINES, '\n\n')
-            .split('\n');
+function containsLoremIpsum(content: string): boolean {
+  let hits = 0;
 
-        let inCodeBlock = false;
+  for (const pattern of LOREM_IPSUM_PATTERNS) {
+    const match = content.match(pattern);
+    if (match) hits += match.length;
+    if (hits >= 2) return true;
+  }
 
-        const cleanedContent = lines
-            .map((line) => {
-                if (CODE_FENCE.test(line)) {
-                    inCodeBlock = !inCodeBlock;
-                    return line.trimEnd();
-                }
+  return false;
+}
 
-                if (inCodeBlock) {
-                    return line;
-                }
+/**
+ * Cleans markdown content while preserving semantic boundaries.
+ * Code blocks, tables, and headings are preserved exactly to prevent
+ * structural corruption and semantic drift.
+ *
+ * @param content - Raw markdown content
+ * @returns Normalized content safe for embedding
+ */
+function cleanContentPreservingStructure(content: string): string {
+  const normalized = content
+    .replace(WINDOWS_LINE_ENDINGS, "\n")
+    .replace(ZERO_WIDTH_CHARS, "")
+    .replace(BR_TAGS, " ")
+    .replace(IMG_TAGS, "")
+    .replace(EXCESSIVE_NEWLINES, "\n\n");
 
-                return line
-                    .replace(MULTIPLE_SPACES, ' ')
-                    .trim();
-            })
-            .join('\n')
-            .trim();
+  const lines = normalized.split("\n");
 
-        return createRawFile(file, cleanedContent);
-    });
+  let inCodeBlock = false;
+  let inTable = false;
 
-    return cleaned;
+  const output: string[] = [];
+
+  for (const line of lines) {
+    if (CODE_FENCE.test(line)) {
+      inCodeBlock = !inCodeBlock;
+      inTable = false;
+      output.push(line.trimEnd());
+      continue;
+    }
+
+    if (inCodeBlock) {
+      output.push(line);
+      continue;
+    }
+
+    if (TABLE_LINE.test(line)) {
+      inTable = true;
+      output.push(line.trimEnd());
+      continue;
+    }
+
+    if (inTable) {
+      inTable = false;
+    }
+
+    if (HEADING_LINE.test(line)) {
+      output.push(line.trimEnd());
+      continue;
+    }
+
+    output.push(
+      line
+        .replace(MULTIPLE_SPACES, " ")
+        .trimEnd(),
+    );
+  }
+
+  return output.join("\n").trimEnd();
+}
+
+/**
+ * Produces a new RawFile instance with updated content while preserving
+ * all original file metadata.
+ *
+ * @param file - Original file object
+ * @param content - Cleaned file content
+ * @returns New RawFile instance
+ */
+function withCleanedContent(file: RawFile, content: string): RawFile {
+  return {
+    ...file,
+    content,
+  };
+}
+
+/**
+ * Filters and normalizes repository files for semantic embedding.
+ * Low-value paths and placeholder documentation are excluded.
+ *
+ * @param files - Raw repository files
+ * @returns Cleaned, embedding-safe files
+ */
+export function cleanFiles(files: RawFile[]): RawFile[] {
+  return files
+    .filter(file => {
+      if (isLowValuePath(file.path)) return false;
+      if (containsLoremIpsum(file.content)) return false;
+      return true;
+    })
+    .map(file =>
+      withCleanedContent(
+        file,
+        cleanContentPreservingStructure(file.content),
+      ),
+    );
 }
