@@ -39,16 +39,22 @@ export interface RawFile {
 }
 
 
-export interface Chunk {
-    id: string;
-    content: string;
-    metadata: {
-      filePath: string;
-      fileSha: string;
-      chunkIndex: number;
-      totalChunks: number;
-      previousChunkId: string | null;
-      nextChunkId: string | null;
-    };
-  }
-  
+    export interface Chunk {
+        id: string;
+        content: string;
+        metadata: {
+        filePath: string;
+        fileSha: string;
+        chunkIndex: number;
+        totalChunks: number;
+        previousChunkId: string | null;
+        nextChunkId: string | null;
+        };
+    }
+
+    export interface EmbedChunk extends Chunk{
+        embeddings:number[] | undefined,
+        embeddingModel:string;
+        
+    }
+
