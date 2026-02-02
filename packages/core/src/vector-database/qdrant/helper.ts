@@ -1,0 +1,32 @@
+import { EmbedChunk } from "../../ingest/github/github.types.js";
+import { Point } from "./qdrant.types.js";
+
+/**
+ * Converts a single embedded chunk to Qdrant point format.
+ * 
+ * @param {EmbedChunk} embedChunk - Chunk with embeddings to convert
+ * @returns {Point} Formatted point ready for Qdrant insertion
+ * @throws If embeddings are missing from the chunk
+ * 
+ * @example
+ * const point = convertChunkToPoint(embedChunk);
+ * await populateCollection([point]);
+ * 
+ * @example
+ * // Convert multiple chunks
+ * const points = embedChunks.map(convertChunkToPoint);
+ * await populateCollection(points);
+ */
+export function convertChunkToPoint(embedChunk: EmbedChunk): Point {
+  if (!embedChunk.embeddings) {
+    throw new Error(`Embeddings missing for chunk: ${embedChunk.id}`);
+  }
+  
+  const { id, embeddings, ...payload } = embedChunk;
+  
+  return {
+    id,
+    vector: embeddings,
+    payload,
+  };
+}
