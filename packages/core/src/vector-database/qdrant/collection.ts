@@ -28,7 +28,7 @@ export async function createQdrantCollection(
   const client = createQdrantClient();
 
   try {
-    const exists = await client.collectionExists(QDRANT_COLLECTION_NAME);
+    const {exists} = await client.collectionExists(QDRANT_COLLECTION_NAME);
 
     if (!exists) {
       await client.createCollection(QDRANT_COLLECTION_NAME, {
