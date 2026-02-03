@@ -1,6 +1,6 @@
 import { EmbedChunk } from "../../ingest/github/github.types.js";
 import { Point } from "./qdrant.types.js";
-
+import { v4 as uuidv4 } from 'uuid'
 /**
  * Converts a single embedded chunk to Qdrant point format.
  * 
@@ -22,10 +22,10 @@ export function convertChunkToPoint(embedChunk: EmbedChunk): Point {
     throw new Error(`Embeddings missing for chunk: ${embedChunk.id}`);
   }
   
-  const { id, embeddings, ...payload } = embedChunk;
+  const {  embeddings, ...payload } = embedChunk;
   
   return {
-    id,
+    id:uuidv4(),
     vector: embeddings,
     payload,
   };
