@@ -8,13 +8,19 @@
     ".": "./dist/index.js"
   },
   "scripts": {
-    "build": "tsc",
-    "test:github": "tsx src/ingest/github/test-fetch.ts"
+    "build": "tsc"
   },
   "license": "MIT",
   "packageManager": "pnpm@10.4.1",
   "dependencies": {
-    "octokit": "^5.0.5"
+    "@google/genai": "^1.39.0",
+    "@langchain/core": "^1.1.18",
+    "@langchain/textsplitters": "^1.0.1",
+    "@qdrant/js-client-rest": "^1.16.2",
+    "fastembed": "^2.1.0",
+    "langchain": "^1.2.16",
+    "octokit": "^5.0.5",
+    "uuid": "^13.0.0"
   },
   "devDependencies": {
     "@types/node": "^25.0.10",
