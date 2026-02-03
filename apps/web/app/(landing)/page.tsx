@@ -7,27 +7,31 @@ import { Cta } from "@/components/landing/cta";
 
 export default function LandingPage() {
   return (
-    <div className="flex flex-col items-top justify-top min-h-svh">
+    <div className="flex flex-col items-center justify-start min-h-screen">
       <GradientBg />
-      <div className={'h-10'}>
+
+      <div className="h-16 sm:h-20 w-full">
         <GithubStar />
       </div>
-      <div className="flex flex-col items-center justify-top gap-20 ">
-        <div className="flex flex-col gap-10">
+
+      <div className="flex flex-col items-center justify-center gap-8 sm:gap-12 md:gap-16 lg:gap-20 px-4 sm:px-6 pb-12 sm:pb-16 md:pb-20">
+
+        <div className="flex flex-col gap-6 sm:gap-8 md:gap-10 items-center">
           <PixelRobot />
-          <div>
-            <h1 className="text-5xl font-bold font-pressStart2p  dark:text-zinc-100 light:text-red-800">
+
+          <div className="max-w-4xl w-full">
+            <h1 className="text-lg sm:text-xl md:text-2xl lg:text-5xl font-bold font-pressStart2p dark:text-zinc-100 text-center leading-tight px-4">
               {HEADING_TEXT}
             </h1>
-            <p className="text-zinc-600 text mt-4  text-center font-fragment-mono">
+            <p className="text-zinc-600 text-sm sm:text-base md:text-lg mt-3 sm:mt-4 text-center font-fragment-mono px-4 max-w-3xl mx-auto">
               {SUBHEADING_TEXT}
             </p>
           </div>
         </div>
-        <CodeTeaser />
-        <Cta/>
-      </div>
 
+        <CodeTeaser />
+        <Cta />
+      </div>
     </div>
-  )
+  );
 }

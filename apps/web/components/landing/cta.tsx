@@ -5,15 +5,22 @@ import { GITHUB_REPO_LINK } from "@/constant/hero-config";
 
 export function Cta() {
     return (
-        <>
-            <div>
-                <Link href={GITHUB_REPO_LINK}>
-                    <Button variant={'secondary'} className="cursor-pointer border border-zinc-600 ">
-                        <GithubIcon /> View On Github
-                    </Button>
-                </Link>
-                <Button variant={'link'} className="cursor-pointer">See Roadmap</Button>
-            </div>
-        </>
-    )
+        <div className="flex flex-col sm:flex-row items-center gap-3 sm:gap-4 px-4 w-full sm:w-auto justify-center">
+            <Link href={GITHUB_REPO_LINK} className="w-full  sm:w-auto ">
+                <Button
+                    variant={'secondary'}
+                    className="bg-white cursor-pointer border border-zinc-600 w-full sm:w-auto text-sm sm:text-base"
+                >
+                    <GithubIcon />
+                    <span>View On Github</span>
+                </Button>
+            </Link>
+            <Button
+                variant={'link'}
+                className="cursor-pointer text-sm sm:text-base w-full sm:w-auto"
+            >
+                See Roadmap
+            </Button>
+        </div>
+    );
 }
