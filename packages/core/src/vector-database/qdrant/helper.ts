@@ -1,4 +1,4 @@
-import { EmbedChunk } from "../../ingest/github/github.types.js";
+import { EmbedChunk } from "../../ingest/sources/github/github.types.js";
 import { Point } from "./qdrant.types.js";
 import { v4 as uuidv4 } from 'uuid'
 /**

@@ -18,7 +18,7 @@ export function createGeminiEmbedder(
   const client = new GoogleGenAI({ apiKey });
   return async function embed(texts: string[]) {
     const vectors: number[][] = [];
-
+    let i = 0;
     for (const text of texts) {
       const result = await client.models.embedContent({
         model,
@@ -33,6 +33,7 @@ export function createGeminiEmbedder(
       if (!embedding) {
         throw new Error("No embedding found");
       }
+      console.log(++i,"completed")
       vectors.push(embedding);
     }
 

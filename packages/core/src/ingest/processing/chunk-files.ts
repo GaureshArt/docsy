@@ -1,5 +1,5 @@
 import { RecursiveCharacterTextSplitter } from "@langchain/textsplitters";
-import { Chunk, RawFile } from "./github.types.js";
+import { Chunk, RawFile } from "../sources/github/github.types.js";
 
 
 /**

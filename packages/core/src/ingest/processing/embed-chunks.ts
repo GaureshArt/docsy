@@ -1,5 +1,5 @@
 import { Embedder } from "../../ai/types.js";
-import { Chunk, EmbedChunk } from "./github.types.js";
+import { Chunk, EmbedChunk } from "../sources/github/github.types.js";
 
 
 
