@@ -164,19 +164,37 @@ GitHub Repo → Fetch Docs → Filter & Prioritize → Clean Content
 ## Project Structure
 ```
 docsy/
-├── apps/
-│   └── web/                     # Landing page & documentation site
+├── apps/                          # User apps
 ├── packages/
-│   ├── core/                    # Core RAG pipeline
-│   │   ├── src/
-│   │   │   ├── ingest/          # Data source adapters
-│   │   │   │   └── github/      # GitHub repository ingestion
-│   │   │   ├── ai/              # AI model integrations
-│   │   │   │   └── embeddings/  # Gemini text-embedding-004
-│   │   │   └── vector-database/ # Vector store adapters
-│   │   │       └── qdrant/      # Qdrant integration
-│   └── docsy/                   # UI components (future)
-└── tooling/                     # Shared ESLint, TypeScript, Prettier configs
+│   ├── core/                     # RAG engine
+│   │   └── src/
+│   │       ├── ai/               # AI layer
+│   │       │   ├── embeddings/   # Embedding providers
+│   │       │   └── types.ts      # AI types
+│   │       ├── ingest/           # Data ingestion
+│   │       │   ├── processing/   # Ingest pipeline
+│   │       │   │   ├── chunk-files.ts    # File chunking
+│   │       │   │   ├── embed-chunks.ts   # Chunk embedding
+│   │       │   │   └── store-chunks.ts   # Vector storage
+│   │       │   └── sources/      # Data sources
+│   │       │       └── github/   # GitHub ingestion
+│   │       │           ├── clean-files.ts        # File cleanup
+│   │       │           ├── fetch-file-content.ts # File fetch
+│   │       │           ├── fetch-git-tree.ts     # Repo tree
+│   │       │           ├── filter-docs.ts        # Doc filter
+│   │       │           ├── github.types.ts       # GitHub types
+│   │       │           ├── octokit-provider.ts   # GitHub client
+│   │       │           └── test-fetch.ts         # Fetch tests
+│   │       ├── vector-database/  # Vector storage
+│   │       │   └── qdrant/       # Qdrant adapter
+│   │       │       ├── client.ts         # Qdrant client
+│   │       │       ├── collection.ts     # Collections
+│   │       │       ├── helper.ts          # DB helpers
+│   │       │       ├── populate.ts        # Data insert
+│   │       │       └── qdrant.types.ts    # Qdrant types
+│   │       └── index.ts          # Core exports
+│   └── docsy/                    # UI components
+└── tooling/                      # Dev tooling
 ```
 
 **Architecture principles:**
