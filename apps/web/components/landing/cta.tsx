@@ -2,6 +2,7 @@ import { Button } from "@workspace/ui/components/button";
 import { GithubIcon } from "../icons/github";
 import Link from "next/link";
 import { GITHUB_REPO_LINK } from "@/constant/hero-config";
+import { ROUTES } from "@/constant/routes";
 
 export function Cta() {
     return (
@@ -15,12 +16,14 @@ export function Cta() {
                     <span>View On Github</span>
                 </Button>
             </Link>
-            <Button
-                variant={'link'}
-                className="cursor-pointer text-sm sm:text-base w-full sm:w-auto"
-            >
-                See Roadmap
-            </Button>
+            <Link href={ROUTES.ROADMAP}>
+                <Button
+                    variant={'link'}
+                    className="cursor-pointer text-sm sm:text-base w-full sm:w-auto"
+                >
+                    See Roadmap
+                </Button>
+            </Link>
         </div>
     );
 }

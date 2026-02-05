@@ -7,7 +7,7 @@ import { Cta } from "@/components/landing/cta";
 
 export default function LandingPage() {
   return (
-    <div className="flex flex-col items-center justify-start min-h-screen">
+    <div className="flex flex-col items-center justify-start min-h-dvh">
       <GradientBg />
 
       <div className="h-16 sm:h-20 w-full">
