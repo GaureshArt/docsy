@@ -9,6 +9,7 @@ import {
 import "@workspace/ui/globals.css"
 import { Providers } from "@/components/providers"
 import { Metadata } from "next"
+import { SITE_URL } from "@/constant/site-config"
 
 const fontSans = Geist({
   subsets: ["latin"],
@@ -41,6 +42,7 @@ const fragmentMono = Fragment_Mono({
 
 
 export const metadata: Metadata = {
+  metadataBase: new URL(SITE_URL),
   title: {
     default: "Docsy - Headless RAG Component for React & Next.js",
     template: "%s | Docsy"
