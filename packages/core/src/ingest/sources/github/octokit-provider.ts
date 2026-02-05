@@ -1,7 +1,9 @@
 import { Octokit } from "octokit";
-
-const octokitProvider:Octokit = new Octokit({
-    auth: process.env.GITHUB_TOKEN,
-});
-
-export default octokitProvider;
+export default function octokitProvider():Octokit{
+    if (!process.env.GITHUB_TOKEN) {
+        throw new Error("GITHUB_TOKEN is required for GitHub ingest");
+    }
+    return new Octokit({
+       auth: process.env.GITHUB_TOKEN,
+   });
+}

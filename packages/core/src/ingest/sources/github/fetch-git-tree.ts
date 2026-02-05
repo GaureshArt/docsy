@@ -1,11 +1,13 @@
 import { FetchGitTreeResponse, GitTreeResponse, RepositoryConfig } from "./github.types.js";
 import octokitProvider from "./octokit-provider.js";
 
-function validateAndParseUrl(url: string): string {
-    if (!url.startsWith("https://github.com/")) {
+function validateAndParseUrl(url_string: string): string {
+    const url = new URL(url_string);
+    const hostname = url.hostname ;
+    if(hostname!==`github.com`){
         throw new Error("URL must start with 'https://github.com/'");
     }
-    return url.replace("https://github.com/", "");
+    return url.pathname
 }
 
 function getOwnerAndRepoFromUrl(url: string): [string, string] {
@@ -49,7 +51,7 @@ function getOwnerAndRepoFromUrl(url: string): [string, string] {
 
 export async function fetchGitTree(url: string, branch: string = "main"): Promise<FetchGitTreeResponse> {
     const repoPath = validateAndParseUrl(url);
-    const octokit = octokitProvider;
+    const octokit = octokitProvider();
 
     const [owner, repo] = getOwnerAndRepoFromUrl(repoPath);
     try {
