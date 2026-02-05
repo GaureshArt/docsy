@@ -40,7 +40,7 @@ const fragmentMono = Fragment_Mono({
   weight: ["400"],
 })
 
-
+const site_url = 'https://docsy-open.vercel.app'
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
@@ -54,13 +54,13 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "en_US",
-
+    url: site_url,
     title: "Docsy - Headless RAG Component",
     description: "Transform your GitHub documentation into an intelligent Q&A system.",
     siteName: "Docsy",
     images: [
       {
-        url: "/og-image.png",
+        url: `og-image.png`,
         width: 1200,
         height: 630,
         alt: "Docsy - Headless RAG Component"
