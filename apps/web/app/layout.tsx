@@ -8,6 +8,7 @@ import {
 
 import "@workspace/ui/globals.css"
 import { Providers } from "@/components/providers"
+import { Metadata } from "next"
 
 const fontSans = Geist({
   subsets: ["latin"],
@@ -37,6 +38,49 @@ const fragmentMono = Fragment_Mono({
   variable: "--next-font-fragment-mono",
   weight: ["400"],
 })
+
+
+export const metadata: Metadata = {
+  title: {
+    default: "Docsy - Headless RAG Component for React & Next.js",
+    template: "%s | Docsy"
+  },
+  description: "Transform your GitHub documentation into an intelligent Q&A system. Drop-in RAG component for React and Next.js applications.",
+  keywords: ["RAG", "documentation", "AI", "Next.js", "React", "embeddings", "vector search", "Qdrant", "chatbot"],
+  authors: [{ name: "Gauresh", url: "https://github.com/GaureshArt" }],
+  creator: "Gauresh",
+  openGraph: {
+    type: "website",
+    locale: "en_US",
+
+    title: "Docsy - Headless RAG Component",
+    description: "Transform your GitHub documentation into an intelligent Q&A system.",
+    siteName: "Docsy",
+    images: [
+      {
+        url: "/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "Docsy - Headless RAG Component"
+      }
+    ]
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Docsy - Headless RAG Component",
+    description: "Transform your GitHub documentation into an intelligent Q&A system.",
+    images: ["/og-image.png"],
+    creator: "@gaureshart"
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
+  icons: {
+    icon: "/favicon.ico",
+  },
+};
+
 
 export default function RootLayout({
   children,
