@@ -24,7 +24,7 @@ export default function RoadmapPage() {
                 <div className="text-center mb-12">
                     <h1 className="text-4xl font-bold text-gray-900 mb-4">Roadmap</h1>
                     <p className="text-lg text-gray-600 mb-6">
-                        Building Docsy in the open. Track our progress and what's coming next.
+                        Building Docsy in the open. Track our progress and what&#39s coming next.
                     </p>
 
 
