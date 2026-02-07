@@ -8,11 +8,11 @@ export interface DocsyConfig {
     path?: string;
   };
   processing: {
-    maxFiles: number;
-    chunkSize: number;
-    chunkOverlap: number;
-    excludePaths: string[];
-    strictRegex: boolean;
+    maxFiles?: number;
+    chunkSize?: number;
+    chunkOverlap?: number;
+    excludePaths?: string[];
+    strictRegex?: boolean;
   };
   embeddings: {
     provider: 'gemini' | 'openai';
