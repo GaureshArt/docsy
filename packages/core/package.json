@@ -4,12 +4,16 @@
   "description": "Core RAG and agent logic for Docsy",
   "type": "module",
   "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "exports": {
-    ".": "./dist/index.js"
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
   },
   "scripts": {
     "build": "tsc",
-    "test:github": "DOTENV_CONFIG_PATH=../../.env tsx -r dotenv/config src/ingest/github/test-fetch.ts"
+    "test:github": "DOTENV_CONFIG_PATH=../../.env tsx -r dotenv/config src/ingest/orchestrator.ts"
   },
   "license": "MIT",
   "packageManager": "pnpm@10.4.1",
