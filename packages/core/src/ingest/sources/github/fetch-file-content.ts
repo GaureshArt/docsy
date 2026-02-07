@@ -22,7 +22,7 @@ const DECODE_FORMAT = 'utf-8'
  * ```
  */
 export async function fetchFileContent(docFiles: GitTreeItem[], config: RepositoryConfig): Promise<RawFile[]> {
-  const octokit = octokitProvider;
+  const octokit = octokitProvider();
 
   const filePromises = docFiles.map(async (file) => {
     try {

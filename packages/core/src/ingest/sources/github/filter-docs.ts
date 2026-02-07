@@ -212,19 +212,28 @@ function prioritizeDocsByImportance(files: GitTreeItem[]): GitTreeItem[] {
  * - Test files and low-signal directories deprioritized
  * - Deep nested files ranked lower than top-level docs
  * 
- * Limits to top 100 files by priority to control processing costs.
+ * Limits to top files by priority to control processing costs.
  * 
  * @param gitTree - Full repository tree from GitHub API
+ * @param options - Optional filtering configuration
+ * @param options.maxFiles - Maximum number of files to process (default: 150)
+ * @param options.excludePaths - Paths to exclude from processing
  * @returns Array of prioritized documentation files ready for processing
  *
  * @example
  * ```ts
  * const result = await fetchGitTree("https://github.com/facebook/react");
- * const docs = filterDocs(result.tree);
+ * const docs = filterDocs(result.tree, { maxFiles: 100 });
  * console.log(`Processing ${docs.length} documentation files`);
  * ```
  */
-export function filterDocs(gitTree: GitTreeResponse): GitTreeItem[] {
+export function filterDocs(
+  gitTree: GitTreeResponse,
+  options?: { maxFiles?: number; excludePaths?: string[] }
+): GitTreeItem[] {
+  const maxFiles = options?.maxFiles ?? MAX_FILES_LIMIT;
+  const excludePaths = options?.excludePaths ?? [];
+
   const filtered = gitTree.tree.filter((file) => {
     if (file.type !== 'blob') return false;
     if (!file.size || file.size === 0 || file.size > MAX_FILE_SIZE) return false;
@@ -234,16 +243,24 @@ export function filterDocs(gitTree: GitTreeResponse): GitTreeItem[] {
       pathLower.endsWith(ext)
     );
 
-    return hasValidExtension;
+    if (!hasValidExtension) return false;
+    if (excludePaths.length > 0) {
+      const shouldExclude = excludePaths.some(excludePath => {
+        const normalizedExclude = excludePath.toLowerCase();
+        return pathLower.includes(normalizedExclude);
+      });
+      if (shouldExclude) return false;
+    }
+    return true;
   });
 
   const prioritized = prioritizeDocsByImportance(filtered);
 
-  if (prioritized.length > MAX_FILES_LIMIT) {
+  if (prioritized.length > maxFiles) {
     console.warn(
-      `Found ${prioritized.length} documentation files, processing top ${MAX_FILES_LIMIT} by priority`
+      `Found ${prioritized.length} documentation files, processing top ${maxFiles} by priority`
     );
-    return prioritized.slice(0, MAX_FILES_LIMIT);
+    return prioritized.slice(0, maxFiles);
   }
 
   console.log(`Selected ${prioritized.length} documentation files for processing`);
