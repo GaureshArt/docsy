@@ -110,14 +110,11 @@ export async function runInit() {
   try {
     await writeConfig(configPath, answers);
     await writeEnvExample(envPath);
-    
     spinner.succeed(chalk.green("✨ Docsy initialized successfully!"));
-    
     console.log(chalk.bold("\n📋 Next steps:\n"));
     console.log(chalk.gray("1."), "Copy", chalk.cyan(".env.example"), "to", chalk.cyan(".env"));
     console.log(chalk.gray("2."), "Add your API keys to", chalk.cyan(".env"));
     console.log(chalk.gray("3."), "Run", chalk.cyan("docsy ingest"), "to index your docs\n");
-    
   } catch (err) {
     spinner.fail(chalk.red("Failed to create config"));
     console.error(err);

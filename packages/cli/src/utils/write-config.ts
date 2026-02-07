@@ -1,4 +1,3 @@
-// utils/writeConfig.ts
 import fs from "node:fs/promises";
 import prettier from "prettier";
 
@@ -20,7 +19,6 @@ export async function writeConfig(
   config: ConfigAnswers
 ): Promise<void> {
   const excludePathsArray = config.excludePaths || [];
-  
   const template = `import { defineConfig } from "@docsy/core";
 
 export default defineConfig({
