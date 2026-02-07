@@ -28,8 +28,8 @@ export async function embedChunks(
       `Embedding count mismatch: expected ${chunks.length}, got ${embeddings.length}`
     );
   }
-  
-  return chunks.map((chunk, index):EmbedChunk => ({
+
+  return chunks.map((chunk, index): EmbedChunk => ({
     ...chunk,
     embeddings: embeddings[index],
     embeddingModel: modelName,

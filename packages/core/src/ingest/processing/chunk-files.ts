@@ -30,8 +30,8 @@ function generateChunkId(
  * Code blocks are preserved by splitting before triple backticks.
  * 
  * Chunk strategy:
- * - Size: 1000 characters 
- * - Overlap: 200 characters 
+ * - Size: 1000 characters (configurable)
+ * - Overlap: 200 characters (configurable)
  * - Preserves: code blocks, headers with content, tables
  * 
  * Each chunk includes:
@@ -40,19 +40,28 @@ function generateChunkId(
  * - File metadata for freshness tracking
  * 
  * @param files - Cleaned documentation files
+ * @param options - Optional chunking configuration
+ * @param options.chunkSize - Size of each chunk in characters (default: 1000)
+ * @param options.chunkOverlap - Overlap between chunks in characters (default: 200)
  * @returns Array of chunks ready for embedding
  * 
  * @example
  * ```ts
  * const cleaned = cleanFiles(rawFiles);
- * const chunks = await chunkFiles(cleaned);
+ * const chunks = await chunkFiles(cleaned, { chunkSize: 1000, chunkOverlap: 200 });
  * console.log(`Created ${chunks.length} chunks`);
  * ```
  */
-export async function chunkFiles(files: RawFile[]): Promise<Chunk[]> {
+export async function chunkFiles(
+  files: RawFile[],
+  options?: { chunkSize?: number; chunkOverlap?: number }
+): Promise<Chunk[]> {
+  const chunkSize = options?.chunkSize ?? 1000;
+  const chunkOverlap = options?.chunkOverlap ?? 200;
+  
   const splitter = new RecursiveCharacterTextSplitter({
-    chunkSize: 1000,
-    chunkOverlap: 200,
+    chunkSize,
+    chunkOverlap,
     separators: [
       "\n```",        
       "\n## ",        
