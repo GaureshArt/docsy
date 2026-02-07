@@ -1,37 +1,21 @@
-import { FetchGitTreeResponse, GitTreeResponse, RepositoryConfig } from "./github.types.js";
+import { FetchGitTreeResponse } from "./github.types.js";
 import octokitProvider from "./octokit-provider.js";
-
-function validateAndParseUrl(url_string: string): string {
-    const url = new URL(url_string);
-    const hostname = url.hostname ;
-    if(hostname!==`github.com`){
-        throw new Error("URL must start with 'https://github.com/'");
-    }
-    return url.pathname
-}
-
-function getOwnerAndRepoFromUrl(url: string): [string, string] {
-    const parts = url.split("/");
-    if (parts.length !== 2 || !parts[0] || !parts[1]) {
-        throw new Error(`Invalid format. Expected "owner/repo", got "${url}"`);
-    }
-    return [parts[0], parts[1]];
-}
 
 /**
  * Fetches the complete Git tree of a GitHub repository using the Git Tree API.
  *
  * This function retrieves all files and directories from the specified branch
- * by calling GitHub’s `git.getTree` API with the `recursive` option enabled.
+ * by calling Octokit `git.getTree` REST API with the `recursive` option enabled.
  *
  * Internally, the branch name is passed as `tree_sha`, which GitHub resolves
  * to the latest commit on that branch.
  *
- * @param url - Full GitHub repository URL (e.g. "https://github.com/owner/repo")
+ * @param owner - Owner of the repo (e.g. vercel is owner in "https://github.com/vercel/next.js")
+ * @param repo - Name of the repo which need to fetch. (e.g. next.js is repo in  "https://github.com/vercel/next.js")
  * @param branch - Branch name to fetch the tree from (default: "main")
  *
  * @returns An object containing:
- * - `tree`: the full Git tree response from GitHub
+ * - `tree`:  the full Git tree response from GitHub 
  * - `repository`: repository metadata (owner, repo, branch)
  *
  * @throws 
@@ -49,11 +33,8 @@ function getOwnerAndRepoFromUrl(url: string): [string, string] {
  * ```
  */
 
-export async function fetchGitTree(url: string, branch: string = "main"): Promise<FetchGitTreeResponse> {
-    const repoPath = validateAndParseUrl(url);
+export async function fetchGitTree(owner: string, repo: string, branch: string = "main"): Promise<FetchGitTreeResponse> {
     const octokit = octokitProvider();
-
-    const [owner, repo] = getOwnerAndRepoFromUrl(repoPath);
     try {
         const tree = await octokit.rest.git.getTree({
             owner,
