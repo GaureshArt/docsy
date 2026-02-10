@@ -1,7 +1,7 @@
 {
-  "name": "@docsy/core",
-  "version": "0.0.0",
-  "description": "Core RAG and agent logic for Docsy",
+  "name": "@gaureshart/docsy-core",
+  "version": "0.0.1-alpha.2",
+  "description": "Headless RAG component for transforming documentation into intelligent Q&A",
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -12,8 +12,7 @@
     }
   },
   "scripts": {
-    "build": "tsc",
-    "test:github": "DOTENV_CONFIG_PATH=../../.env tsx -r dotenv/config src/ingest/orchestrator.ts"
+    "build": "tsc"
   },
   "license": "MIT",
   "packageManager": "pnpm@10.4.1",
