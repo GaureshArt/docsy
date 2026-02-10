@@ -24,6 +24,9 @@ importers:
       prettier:
         specifier: ^3.7.4
         version: 3.7.4
+      tsx:
+        specifier: ^4.21.0
+        version: 4.21.0
       turbo:
         specifier: ^2.6.3
         version: 2.6.3
@@ -79,9 +82,9 @@ importers:
 
   packages/cli:
     dependencies:
-      '@docsy/core':
-        specifier: workspace:*
-        version: link:../core
+      '@gaureshart/docsy-core':
+        specifier: ^0.0.1-alpha.2
+        version: 0.0.1-alpha.2(react-dom@19.2.1(react@19.2.1))(react@19.2.1)(typescript@5.9.3)
       boxen:
         specifier: ^8.0.1
         version: 8.0.1
@@ -548,6 +551,9 @@ packages:
   '@eslint/plugin-kit@0.4.1':
     resolution: {integrity: sha512-43/qtrDUokr7LJqoF2c3+RInu/t4zfrpYdoSDfYyhg52rwLV6TnOvdG4fXm7IkSB3wErkcmJS9iEhjVtOSEjjA==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
+
+  '@gaureshart/docsy-core@0.0.1-alpha.2':
+    resolution: {integrity: sha512-GiA6/5wOmIpER3RIkaRA3EM+Tmv7Nkyoo69/OlIYTwFckRuSOnWzmNipwWMCpIg0q8GNCFQaxdJRrItfCqonqQ==}
 
   '@google/genai@1.39.0':
     resolution: {integrity: sha512-Vz7AQsOdBeiIcxmXIQNy/hzDvyAOE1lSpWA10itUQza7h3aQFF6QSGaQ7o1GYsjMD3XslK4Ee/Ol0eLhRXb7gA==}
@@ -3930,6 +3936,30 @@ snapshots:
     dependencies:
       '@eslint/core': 0.17.0
       levn: 0.4.1
+
+  '@gaureshart/docsy-core@0.0.1-alpha.2(react-dom@19.2.1(react@19.2.1))(react@19.2.1)(typescript@5.9.3)':
+    dependencies:
+      '@google/genai': 1.39.0
+      '@langchain/core': 1.1.18
+      '@langchain/textsplitters': 1.0.1(@langchain/core@1.1.18)
+      '@qdrant/js-client-rest': 1.16.2(typescript@5.9.3)
+      fastembed: 2.1.0
+      langchain: 1.2.16(@langchain/core@1.1.18)(react-dom@19.2.1(react@19.2.1))(react@19.2.1)
+      octokit: 5.0.5
+      uuid: 13.0.0
+    transitivePeerDependencies:
+      - '@modelcontextprotocol/sdk'
+      - '@opentelemetry/api'
+      - '@opentelemetry/exporter-trace-otlp-proto'
+      - '@opentelemetry/sdk-trace-base'
+      - bufferutil
+      - openai
+      - react
+      - react-dom
+      - supports-color
+      - typescript
+      - utf-8-validate
+      - zod-to-json-schema
 
   '@google/genai@1.39.0':
     dependencies:
