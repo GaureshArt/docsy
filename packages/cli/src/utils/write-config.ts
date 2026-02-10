@@ -19,7 +19,7 @@ export async function writeConfig(
   config: ConfigAnswers
 ): Promise<void> {
   const excludePathsArray = config.excludePaths || [];
-  const template = `import { defineConfig } from "@docsy/core";
+  const template = `import { defineConfig } from "@gaureshart/docsy-core";
 
 export default defineConfig({
   source: {

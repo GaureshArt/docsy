@@ -1,6 +1,6 @@
 import path from "node:path";
 import { pathToFileURL } from "node:url";
-import {ingest, type DocsyConfig } from "@docsy/core";
+import { ingest, type DocsyConfig } from "@gaureshart/docsy-core";
 import ora from "ora";
 import chalk from "chalk";
 
