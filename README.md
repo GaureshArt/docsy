@@ -16,6 +16,7 @@ Stop forcing users to scroll through endless markdown files. Let them ask questi
 Docsy is a **headless RAG (Retrieval-Augmented Generation) component** that turns your GitHub documentation into an intelligent Q&A system.
 
 Point it at your repo's docs, and Docsy handles everything:
+
 - 📥 Fetches markdown files from GitHub
 - 🧹 Cleans and normalizes content
 - ✂️ Chunks documents intelligently (preserves code blocks, tables, structure)
@@ -30,22 +31,23 @@ Point it at your repo's docs, and Docsy handles everything:
 ## Why Docsy?
 
 **For developers:**
+
 - No need to build RAG pipelines from scratch
 - Production-ready document processing and chunking
 - Markdown-aware (never splits code blocks mid-function)
 - TypeScript-first with full type safety
 
 **For users:**
+
 - Ask questions in natural language instead of searching
 - Get contextual answers with source citations
 - Works with technical content (APIs, tutorials, guides)
 
 **For documentation maintainers:**
+
 - Keep using GitHub and markdown (zero migration)
 - Automatic content prioritization (README > guides > API docs)
 - Smart filtering (excludes tests, build artifacts, node_modules)
-
-
 
 > **Note:** Full query/retrieval API coming soon. Current release focuses on ingestion pipeline.
 
@@ -54,18 +56,21 @@ Point it at your repo's docs, and Docsy handles everything:
 ## Features
 
 ### 🎯 Smart Document Processing
+
 - **Intelligent filtering** — Only indexes `.md` and `.mdx` files
 - **Priority ranking** — README > getting-started > main docs > API > examples
 - **Monorepo support** — Handles packages, modules, nested structures
 - **Auto-exclusions** — Skips `node_modules`, tests, build artifacts
 
 ### ✂️ Markdown-Aware Chunking
+
 - **Code block preservation** — Never splits code mid-function
 - **Header context** — Keeps headings with their content
 - **Table integrity** — Respects markdown table structures
 - **Smart overlapping** — Context windows for better retrieval
 
 ### 🏗️ Production-Ready Architecture
+
 - **TypeScript throughout** — Full type safety, no `any`
 - **Modular design** — Swap out embedding providers, vector stores
 - **Error handling** — Graceful failures with detailed error messages
@@ -82,9 +87,10 @@ Docsy is under active development. **Core ingestion pipeline is complete:**
 ✅ **Markdown Cleaning** — Remove HTML, normalize whitespace  
 ✅ **Intelligent Chunking** — Structure-aware document splitting  
 ✅ **Embedding Generation** — Vector embeddings via Gemini  
-✅ **Vector Storage** — Qdrant integration complete  
+✅ **Vector Storage** — Qdrant integration complete
 
 **Next up:**
+
 - 🚧 Semantic search and retrieval API
 - 🚧 Pre-built chat UI component
 - 🚧 Next.js integration example
@@ -95,12 +101,13 @@ Docsy is under active development. **Core ingestion pipeline is complete:**
 ## Architecture
 
 ```
-GitHub Repo → Fetch Docs → Filter & Prioritize → Clean Content 
+GitHub Repo → Fetch Docs → Filter & Prioritize → Clean Content
 → Smart Chunking → Generate Embeddings → Vector DB (Qdrant)
 → [Coming Soon: Query → Search → Context → LLM → Response]
 ```
 
 **Design principles:**
+
 - **Headless by default** — Use your own UI or ours
 - **Modular components** — Swap embedding models, vector stores
 - **Type-safe** — Full TypeScript, strict mode enabled
@@ -110,15 +117,15 @@ GitHub Repo → Fetch Docs → Filter & Prioritize → Clean Content
 
 ## Technical Stack
 
-| Layer | Technology |
-|-------|-----------|
-| Language | TypeScript 5.7+ |
-| Framework | Next.js 16+ (optional, for UI) |
-| Chunking | LangChain RecursiveCharacterTextSplitter |
-| Embeddings | Google Gemini (text-embedding-004) |
-| Vector DB | Qdrant Cloud |
-| Package Manager | pnpm |
-| Monorepo | Turborepo |
+| Layer           | Technology                               |
+| --------------- | ---------------------------------------- |
+| Language        | TypeScript 5.7+                          |
+| Framework       | Next.js 16+ (optional, for UI)           |
+| Chunking        | LangChain RecursiveCharacterTextSplitter |
+| Embeddings      | Google Gemini (text-embedding-004)       |
+| Vector DB       | Qdrant Cloud                             |
+| Package Manager | pnpm                                     |
+| Monorepo        | Turborepo                                |
 
 **Future support:** OpenAI embeddings, Pinecone, pgvector, local models
 
@@ -127,6 +134,7 @@ GitHub Repo → Fetch Docs → Filter & Prioritize → Clean Content
 ## Roadmap
 
 ### ✅ Phase 1: Ingestion Pipeline (Complete)
+
 - [x] GitHub repository fetching
 - [x] Intelligent filtering and prioritization
 - [x] Content cleaning and normalization
@@ -135,12 +143,14 @@ GitHub Repo → Fetch Docs → Filter & Prioritize → Clean Content
 - [x] Vector database integration (Qdrant)
 
 ### 🚧 Phase 2: Retrieval & Query (In Progress)
+
 - [ ] Semantic search implementation
 - [ ] Context ranking and reranking
 - [ ] Citation generation with GitHub links
 - [ ] Query optimization
 
 ### 📋 Phase 3: UI Components
+
 - [ ] Pre-built chat interface (React)
 - [ ] Streaming responses
 - [ ] Syntax highlighting for code
@@ -148,12 +158,14 @@ GitHub Repo → Fetch Docs → Filter & Prioritize → Clean Content
 - [ ] Feedback mechanism
 
 ### 🔮 Phase 4: Beyond GitHub
+
 - [ ] Website scraping adapter
 - [ ] Local filesystem support
 - [ ] Google Drive integration
 - [ ] Generic adapter interface
 
 ### 🚀 Phase 5: Scale & Performance
+
 - [ ] Incremental updates (only changed files)
 - [ ] Multiple LLM providers (OpenAI, Anthropic, local)
 - [ ] Multiple vector stores (Pinecone, Supabase, pgvector)
@@ -162,65 +174,170 @@ GitHub Repo → Fetch Docs → Filter & Prioritize → Clean Content
 ---
 
 ## Project Structure
+
 ```
 docsy/
-├── apps/                          # User apps
+├── apps/                          # Applications
+│   └── web/                      # Landing page
 ├── packages/
-│   ├── core/                     # RAG engine
+│   ├── cli/                      # CLI tool
 │   │   └── src/
-│   │       ├── ai/               # AI layer
-│   │       │   ├── embeddings/   # Embedding providers
-│   │       │   └── types.ts      # AI types
-│   │       ├── ingest/           # Data ingestion
-│   │       │   ├── processing/   # Ingest pipeline
-│   │       │   │   ├── chunk-files.ts    # File chunking
-│   │       │   │   ├── embed-chunks.ts   # Chunk embedding
-│   │       │   │   └── store-chunks.ts   # Vector storage
-│   │       │   └── sources/      # Data sources
-│   │       │       └── github/   # GitHub ingestion
+│   │       ├── commands/         # CLI commands
+│   │       │   ├── init.ts      # Initialize config
+│   │       │   └── ingest.ts    # Run ingestion
+│   │       ├── utils/           # CLI utilities
+│   │       └── index.ts         # CLI entry
+│   ├── core/                    # RAG engine
+│   │   └── src/
+│   │       ├── ai/              # AI layer
+│   │       │   ├── embeddings/  # Embedding providers
+│   │       │   └── types.ts     # AI types
+│   │       ├── config/          # Configuration
+│   │       │   └── index.ts     # Config types & helpers
+│   │       ├── ingest/          # Data ingestion
+│   │       │   ├── processing/  # Universal processing
+│   │       │   │   ├── chunk-files.ts   # File chunking
+│   │       │   │   ├── embed-chunks.ts  # Chunk embedding
+│   │       │   │   └── store-chunks.ts  # Vector storage
+│   │       │   └── sources/     # Data sources
+│   │       │       └── github/  # GitHub ingestion
 │   │       │           ├── clean-files.ts        # File cleanup
 │   │       │           ├── fetch-file-content.ts # File fetch
 │   │       │           ├── fetch-git-tree.ts     # Repo tree
 │   │       │           ├── filter-docs.ts        # Doc filter
 │   │       │           ├── github.types.ts       # GitHub types
-│   │       │           ├── octokit-provider.ts   # GitHub client
-│   │       │           └── test-fetch.ts         # Fetch tests
-│   │       ├── vector-database/  # Vector storage
-│   │       │   └── qdrant/       # Qdrant adapter
-│   │       │       ├── client.ts         # Qdrant client
-│   │       │       ├── collection.ts     # Collections
-│   │       │       ├── helper.ts          # DB helpers
-│   │       │       ├── populate.ts        # Data insert
-│   │       │       └── qdrant.types.ts    # Qdrant types
-│   │       └── index.ts          # Core exports
-│   └── docsy/                    # UI components
-└── tooling/                      # Dev tooling
+│   │       │           └── octokit-provider.ts   # GitHub client
+│   │       ├── retrieval/       # Query & search
+│   │       │   └── query-embed.ts # Query embedding
+│   │       ├── vector-database/ # Vector storage
+│   │       │   └── qdrant/      # Qdrant adapter
+│   │       │       ├── client.ts        # Qdrant client
+│   │       │       ├── collection.ts    # Collections
+│   │       │       ├── helper.ts        # DB helpers
+│   │       │       ├── populate.ts      # Data insert
+│   │       │       └── qdrant.types.ts  # Qdrant types
+│   │       └── index.ts         # Core exports
+│   └── ui/                      # Shared UI components
+└── tooling/                     # Dev tooling
+    ├── eslint/                  # ESLint configs
+    └── typescript/              # TypeScript configs
 ```
 
+## Quick Start
+
+### Installation
+
+```bash
+npm install @gaureshart/docsy-cli
+npm install @gaureshart/docsy-core
+```
+
+### Initialize Configuration
+
+```bash
+npx @gaureshart/docsy-cli init
+```
+
+This creates:
+
+- `docsy.config.ts` - Project configuration
+- `.env.example` - Environment variables template
+
+### Configure Environment
+
+Copy `.env.example` to `.env` and add your API keys:
+
+```bash
+# GitHub (optional for public repos)
+GITHUB_TOKEN=
+
+# Embedding Provider
+GEMINI_API_KEY=your_gemini_api_key
+
+# Vector Database
+QDRANT_URL=your_qdrant_url
+QDRANT_API_KEY=your_qdrant_api_key
+```
+
+### Example Configuration
+
+```typescript
+// docsy.config.ts
+import { defineConfig } from '@gaureshart/docsy-core'
+
+export default defineConfig({
+  source: {
+    type: 'github',
+    owner: 'facebook',
+    repo: 'react',
+    branch: 'main',
+    path: 'docs',
+  },
+
+  processing: {
+    maxFiles: 100,
+    chunkSize: 1000,
+    chunkOverlap: 200,
+  },
+
+  embeddings: {
+    provider: 'gemini',
+  },
+
+  vectorDatabase: {
+    provider: 'qdrant',
+    collection: 'react-docs',
+  },
+})
+```
+
+### Run Ingestion
+
+```bash
+npx @gaureshart/docsy-cli ingest
+```
+
+This will:
+
+1. Fetch documentation from GitHub
+2. Clean and filter markdown files
+3. Chunk documents intelligently
+4. Generate embeddings
+5. Store in Qdrant vector database
+
+---
+
 **Architecture principles:**
+
 - **Adapter pattern** — Designed for swappable data sources and models
 - **Modular design** — Each component is independent and replaceable
 - **Type-safe** — Shared interfaces for consistency
 
 ---
+
 ## Architecture
+
 ```
-GitHub Repo → Fetch & Filter → Clean Content → Smart Chunking 
+GitHub Repo → Fetch & Filter → Clean Content → Smart Chunking
 → Generate Embeddings (Gemini) → Store in Qdrant
 ```
 
 **Current implementation:**
+
 - **Ingest:** GitHub repositories (public repos)
 - **Processing:** Markdown-aware chunking with structure preservation
 - **Embeddings:** Google Gemini text-embedding-004 (768 dimensions)
 - **Storage:** Qdrant vector database
 
 **Design principles:**
+
 - Immutable transformations (pure functions)
 - Type-safe throughout (TypeScript strict mode)
 - Modular architecture (swap components as needed)
 - Separation of concerns (each stage independent)
+
 ---
+
 ## Development
 
 ```bash
@@ -261,6 +378,7 @@ Please read [CODE_OF_CONDUCT.md](./CODE_OF_CONDUCT.md) before contributing.
 Documentation discoverability is a universal problem. Every project needs docs, every project struggles with search.
 
 By building Docsy in the open:
+
 - ✅ Self-host without vendor lock-in
 - ✅ Community-driven data source adapters
 - ✅ Transparent development and roadmap
@@ -275,7 +393,7 @@ By building Docsy in the open:
 
 ## Links
 
-- 📦 [npm Package] *(coming soon)*
+- 📦 [npm Package] _(coming soon)_
 - 🐛 [Report Issues](https://github.com/GaureshArt/docsy/issues)
 - 💬 [Discussions](https://github.com/GaureshArt/docsy/discussions)
 - 🌟 [Star on GitHub](https://github.com/GaureshArt/docsy)
@@ -283,4 +401,3 @@ By building Docsy in the open:
 ---
 
 **Built for developers who believe great documentation deserves great discoverability.**
-
