@@ -16,8 +16,6 @@ import { QueryConfig } from "./types.js";
  * @param {QueryConfig} config
  * Configuration object containing embedding-related settings.
  *
- * @param {string} config.embedApiKey
- * API key used to authenticate with the embedding provider.
  *
  * @returns {Promise<number[]>}
  * A promise that resolves to a numerical embedding vector representing the query.
@@ -28,7 +26,11 @@ import { QueryConfig } from "./types.js";
  * @example
  * ```ts
  * const vector = await queryEmbed("How does vector search work?", {
- *   embedApiKey: process.env.GEMINI_API_KEY!
+    embeddings:{
+        provider:'gemini',
+        apikey:process.env.GEMINI_API_KEY,
+        model:'gemini-embedding-001'
+    }
  * });
  * ```
  */
@@ -37,16 +39,13 @@ export async function queryEmbed(
     config: QueryConfig
 ): Promise<number[]> {
     const embedder = getEmbedder({
-        provider: 'gemini',
-        apiKey: config.embedApiKey,
+        provider: config.embeddings.provider,
+        apiKey: config.embeddings.apikey
     });
-
     const embeddedQuery = await embedder([query]);
     const vector = embeddedQuery.at(0);
-
     if (!vector) {
         throw new Error('Query Embedding failed. Try again!');
     }
-
     return vector;
 }
