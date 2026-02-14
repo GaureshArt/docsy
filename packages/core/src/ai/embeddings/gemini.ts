@@ -33,7 +33,7 @@ export function createGeminiEmbedder(
       if (!embedding) {
         throw new Error("No embedding found");
       }
-      console.log(++i,"completed")
+      console.log(++i, "completed")
       vectors.push(embedding);
     }
 
