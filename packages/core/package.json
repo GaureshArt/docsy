@@ -28,6 +28,7 @@
     "fastembed": "^2.1.0",
     "langchain": "^1.2.16",
     "octokit": "^5.0.5",
+    "openai": "^6.22.0",
     "uuid": "^13.0.0"
   },
   "devDependencies": {
