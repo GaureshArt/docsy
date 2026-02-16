@@ -1,7 +1,7 @@
 export interface LlmConfig {
     provider: "gemini" | "openai";
     model: string
-    maxRetries: number;
+    maxRetries?: number;
 }
 export interface LoadPrompt {
     query: string;
