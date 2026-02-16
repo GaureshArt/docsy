@@ -1,5 +1,6 @@
-import { Embedder, EmbeddingConfig } from "../types.js";
-import { createGeminiEmbedder } from "./gemini.js";
+import { Embedder, EmbeddingConfig } from '../types.js'
+import { createGeminiEmbedder } from './gemini.js'
+import createOpenAiEmbedder from './openai.js'
 
 /**
  * Resolves and initializes an embedding provider based on configuration.
@@ -12,15 +13,11 @@ import { createGeminiEmbedder } from "./gemini.js";
  */
 export function getEmbedder(config: EmbeddingConfig): Embedder {
   switch (config.provider) {
-    case "gemini":
-      return createGeminiEmbedder(
-        config.apiKey,
-        config.model
-      );
-
+    case 'google':
+      return createGeminiEmbedder(config.model, config.taskType)
+    case 'openai':
+      return createOpenAiEmbedder(config)
     default:
-      throw new Error(
-        `Unsupported embedding provider: ${config.provider}`
-      );
+      throw new Error(`Unsupported embedding provider`)
   }
 }

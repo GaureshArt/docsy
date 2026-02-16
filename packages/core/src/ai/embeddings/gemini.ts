@@ -12,10 +12,10 @@ import { Embedder } from "../types.js";
  * @returns An embedder function
  */
 export function createGeminiEmbedder(
-  apiKey: string,
   model = "gemini-embedding-001",
+  taskType = 'RETRIEVAL_DOCUMENT'
 ): Embedder {
-  const client = new GoogleGenAI({ apiKey });
+  const client = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
   return async function embed(texts: string[]) {
     const vectors: number[][] = [];
     let i = 0;
@@ -24,7 +24,7 @@ export function createGeminiEmbedder(
         model,
         contents: text,
         config: {
-          taskType: 'RETRIEVAL_DOCUMENT',
+          taskType,
           outputDimensionality: 768
         }
       });
