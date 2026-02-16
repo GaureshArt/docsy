@@ -38,10 +38,7 @@ export async function queryEmbed(
     query: string,
     config: QueryConfig
 ): Promise<number[]> {
-    const embedder = getEmbedder({
-        provider: config.embeddings.provider,
-        apiKey: config.embeddings.apikey
-    });
+    const embedder = getEmbedder(config.embeddings);
     const embeddedQuery = await embedder([query]);
     const vector = embeddedQuery.at(0);
     if (!vector) {
