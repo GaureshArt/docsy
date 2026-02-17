@@ -1,5 +1,5 @@
 export interface LlmConfig {
-    provider: "gemini" | "openai";
+    provider: "google" | "openai";
     model: string
     maxRetries?: number;
 }

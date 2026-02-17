@@ -15,7 +15,7 @@ import { openai } from "@ai-sdk/openai";
  */
 export function modelRegistry(config: LlmConfig): LanguageModel {
     switch (config.provider) {
-        case 'gemini':
+        case 'google':
             return google(config.model)
         case 'openai':
             return openai(config.model)
