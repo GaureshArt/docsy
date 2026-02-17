@@ -6,9 +6,9 @@ const CodeTeaser = () => {
   const [activeTab, setActiveTab] = useState<PackageManager>('npm');
 
   const commands: Record<PackageManager, string> = {
-    npm: 'npm install @coming/soon',
-    yarn: 'yarn add @coming/soon',
-    pnpm: 'pnpm add @coming/soon'
+    npm: 'npm install @gaureshart/docsy-core @gaureshart/docsy-cli',
+    yarn: 'yarn add @gaureshart/docsy-core @gaureshart/docsy-cli',
+    pnpm: 'pnpm add @gaureshart/docsy-core @gaureshart/docsy-cli'
   };
 
   return (
@@ -40,13 +40,14 @@ const CodeTeaser = () => {
             <span className="text-gray-400 flex-shrink-0">$</span>
 
             <div className="relative flex-1 min-w-0">
-              <code className="text-gray-800 blur select-none opacity-100 bg-zinc-200 block truncate sm:whitespace-normal">
+              <code className="text-gray-900 select-none opacity-100  block truncate sm:whitespace-normal">
                 {commands[activeTab]}
               </code>
             </div>
-            <button
-              disabled
-              className="p-1 sm:p-1.5 text-gray-300 cursor-not-allowed flex-shrink-0"
+            <button onClick={async () => {
+              await navigator.clipboard.writeText(commands[activeTab]);
+            }}
+              className="p-1 sm:p-1.5 text-gray-300 flex-shrink-0"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
