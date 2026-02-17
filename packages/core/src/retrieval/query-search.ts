@@ -1,12 +1,11 @@
 import path from "path";
 import { getVectorDB } from "../vector-database/registry.js";
 import { Point } from "../vector-database/qdrant/qdrant.types.js";
+import { QueryConfig } from "./types.js";
 
-export async function querySearch(queryVector: number[]): Promise<Point[]> {
-    const configPath = path.join(process.cwd(), 'docsy.config.ts');
-    const { default: config } = await import(configPath);
+export async function querySearch(queryVector: number[], config: QueryConfig): Promise<Point[]> {
 
-    const vectorDb = await getVectorDB({ provider: 'qdrant' });
+    const vectorDb = await getVectorDB({ provider: config.vectorDatabase.provider });
 
     const result = await vectorDb.query(config.vectorDatabase.collection, {
         query: queryVector,

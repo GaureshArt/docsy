@@ -1,3 +1,4 @@
+import { EmbeddingConfig } from "../ai/types.js";
 
 export interface DocsyConfig {
   source: {
@@ -14,10 +15,7 @@ export interface DocsyConfig {
     excludePaths?: string[];
     strictRegex?: boolean;
   };
-  embeddings: {
-    provider: 'gemini' | 'openai';
-    model?: string;
-  };
+  embeddings: EmbeddingConfig;
   vectorDatabase: {
     provider: 'qdrant';
     collection: string;

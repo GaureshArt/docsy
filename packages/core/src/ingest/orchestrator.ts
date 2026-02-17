@@ -25,26 +25,6 @@ const EMBEDDING_VECTOR_SIZES: Record<string, number> = {
  * @returns API key string
  * @throws Error if API key is not found
  */
-function getEmbeddingApiKey(provider: string): string {
-  const envKey = provider === 'gemini'
-    ? 'GEMINI_API_KEY'
-    : provider === 'openai'
-      ? 'OPENAI_API_KEY'
-      : null;
-
-  if (!envKey) {
-    throw new Error(`Unsupported embedding provider: ${provider}`);
-  }
-
-  const apiKey = process.env[envKey];
-  if (!apiKey) {
-    throw new Error(
-      `${envKey} environment variable is required for ${provider} embeddings`
-    );
-  }
-
-  return apiKey;
-}
 
 /**
  * Orchestrates the complete ingestion pipeline for documentation.
@@ -104,20 +84,13 @@ export async function ingest(config: DocsyConfig): Promise<void> {
 
 
   console.log('Generating embeddings...');
-  const apiKey = getEmbeddingApiKey(config.embeddings.provider);
-
-  if (config.embeddings.provider !== 'gemini') {
-    throw new Error(`Embedding provider "${config.embeddings.provider}" is not yet implemented. Only "gemini" is currently supported.`);
+  if (config.embeddings.provider !== 'google') {
+    throw new Error(`Embedding provider "${config.embeddings.provider}" is not yet implemented. Only "google" is currently supported.`);
   }
 
 
-  const modelName = config.embeddings.model ??
-    (config.embeddings.provider === 'gemini' ? 'gemini-embedding-001' : 'text-embedding-ada-002');
-  const embedder = getEmbedder({
-    provider: config.embeddings.provider as 'gemini',
-    apiKey,
-    model: config.embeddings.model,
-  });
+  const modelName = config.embeddings.model
+  const embedder = getEmbedder(config.embeddings);
 
   const embeddedChunks = await embedChunks(chunks, embedder, modelName);
   console.log(`Generated embeddings for ${embeddedChunks.length} chunks`);
