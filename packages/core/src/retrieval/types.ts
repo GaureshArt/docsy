@@ -7,7 +7,13 @@ export type patternTypes = "naive"
 export interface QueryConfig {
     pattern: patternTypes;
     llmConfig: LlmConfig;
+    systemPrompt?: string;
+    userPrompt?: string;
     query: string;
+    vectorDatabase: {
+        collection: string;
+        provider: 'qdrant'
+    };
     messages: ModelMessage[];
     embeddings: EmbeddingConfig
 }
