@@ -1,20 +1,19 @@
-"use client"
-import React, { useState } from 'react';
+'use client'
+import React, { useState } from 'react'
 
-type PackageManager = 'npm' | 'yarn' | 'pnpm';
+type PackageManager = 'npm' | 'yarn' | 'pnpm'
 const CodeTeaser = () => {
-  const [activeTab, setActiveTab] = useState<PackageManager>('npm');
+  const [activeTab, setActiveTab] = useState<PackageManager>('npm')
 
   const commands: Record<PackageManager, string> = {
     npm: 'npm install @gaureshart/docsy-core @gaureshart/docsy-cli',
     yarn: 'yarn add @gaureshart/docsy-core @gaureshart/docsy-cli',
-    pnpm: 'pnpm add @gaureshart/docsy-core @gaureshart/docsy-cli'
-  };
+    pnpm: 'pnpm add @gaureshart/docsy-core @gaureshart/docsy-cli',
+  }
 
   return (
-    <div className="w-full max-w-2xl mx-auto px-4 sm:px-6">
+    <div className="w-4/5 max-w-2xl mx-auto px-4 sm:px-6">
       <div className="relative bg-white border border-zinc-400 rounded-lg overflow-hidden shadow-sm">
-
         <div className="flex items-center gap-2 sm:gap-3 px-3 sm:px-4 py-2 sm:py-2.5 border-b border-gray-100">
           <div className="flex gap-1.5 sm:gap-2">
             {(['npm', 'yarn', 'pnpm'] as const).map((tab) => (
@@ -23,9 +22,10 @@ const CodeTeaser = () => {
                 onClick={() => setActiveTab(tab)}
                 className={`
                   px-2 sm:px-3 py-1 text-xs font-medium font-fragment-mono rounded transition-colors
-                  ${activeTab === tab
-                    ? 'bg-black text-white'
-                    : 'text-gray-500 hover:text-gray-900 hover:bg-gray-50'
+                  ${
+                    activeTab === tab
+                      ? 'bg-black text-white'
+                      : 'text-gray-500 hover:text-gray-900 hover:bg-gray-50'
                   }
                 `}
               >
@@ -44,9 +44,10 @@ const CodeTeaser = () => {
                 {commands[activeTab]}
               </code>
             </div>
-            <button onClick={async () => {
-              await navigator.clipboard.writeText(commands[activeTab]);
-            }}
+            <button
+              onClick={async () => {
+                await navigator.clipboard.writeText(commands[activeTab])
+              }}
               className="p-1 sm:p-1.5 text-gray-300 flex-shrink-0"
             >
               <svg
@@ -67,7 +68,7 @@ const CodeTeaser = () => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default CodeTeaser;
+export default CodeTeaser
