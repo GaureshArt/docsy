@@ -12,7 +12,7 @@ const CodeTeaser = () => {
   }
 
   return (
-    <div className="w-4/5 max-w-2xl mx-auto px-4 sm:px-6">
+    <div className="w-full max-w-2xl mx-auto px-4 sm:px-6">
       <div className="relative bg-white border border-zinc-400 rounded-lg overflow-hidden shadow-sm">
         <div className="flex items-center gap-2 sm:gap-3 px-3 sm:px-4 py-2 sm:py-2.5 border-b border-gray-100">
           <div className="flex gap-1.5 sm:gap-2">
@@ -25,7 +25,7 @@ const CodeTeaser = () => {
                   ${
                     activeTab === tab
                       ? 'bg-black text-white'
-                      : 'text-gray-500 hover:text-gray-900 hover:bg-gray-50'
+                      : 'text-gray-500 hover:text-gray-900 hover:bg-gray-50 cursor-pointer'
                   }
                 `}
               >
@@ -48,7 +48,7 @@ const CodeTeaser = () => {
               onClick={async () => {
                 await navigator.clipboard.writeText(commands[activeTab])
               }}
-              className="p-1 sm:p-1.5 text-gray-300 flex-shrink-0"
+              className="p-1 sm:p-1.5 text-gray-300 flex-shrink-0 cursor-copy"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
