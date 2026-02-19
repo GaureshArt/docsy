@@ -1,5 +1,4 @@
 import fs from "node:fs/promises";
-import prettier from "prettier";
 
 interface ConfigAnswers {
   githubOwner: string;
@@ -8,7 +7,8 @@ interface ConfigAnswers {
   githubPath?: string;
   maxFiles: number;
   chunkSize: number;
-  embeddingProvider: 'gemini' | 'openai';
+  embeddingProvider: 'google' | 'openai';
+
   collectionName: string;
   excludePaths?: string[];
   strictRegex?: boolean;
@@ -40,6 +40,7 @@ export default defineConfig({
   
   embeddings: {
     provider: "${config.embeddingProvider}",
+    model:
   },
   
   vectorDatabase: {
@@ -48,10 +49,5 @@ export default defineConfig({
   },
 });
 `;
-
-  const formatted = await prettier.format(template, {
-    parser: "typescript",
-  });
-
-  await fs.writeFile(filePath, formatted, "utf-8");
+  await fs.writeFile(filePath, template, "utf-8");
 }
