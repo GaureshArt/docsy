@@ -5,7 +5,7 @@ import fs from "node:fs";
 import chalk from "chalk";
 import { writeConfig } from "../utils/write-config.js";
 import { writeEnvExample } from "../utils/write-env-example.js";
-import { IDocsyConfig } from "../../../core/dist/index.js";
+import { DocsyConfig } from "../../../core/dist/index.js";
 
 
 
@@ -118,7 +118,7 @@ export async function runInit() {
     message: 'Collection name',
     initial: `${sourceAnswers.repo}-docs`
   });
-  const finalConfig: IDocsyConfig = {
+  const finalConfig: DocsyConfig = {
     source: {
       type: 'github',
       owner: sourceAnswers.owner,
