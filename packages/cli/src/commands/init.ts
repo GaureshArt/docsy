@@ -5,20 +5,24 @@ import fs from "node:fs";
 import chalk from "chalk";
 import { writeConfig } from "../utils/write-config.js";
 import { writeEnvExample } from "../utils/write-env-example.js";
-import { DocsyConfig } from "@gaureshart/docsy-core";
+import { IDocsyConfig } from "../../../core/dist/index.js";
 
 
-interface FullAnswers {
+
+export interface FullAnswers {
   githubOwner: string;
   githubRepo: string;
   githubBranch: string;
   githubPath: string;
   maxFiles: number;
   chunkSize: number;
-  embeddingProvider: 'google' | 'openai';
-  embeddingModel: string;
-  embeddingTaskType?: string;
-  collectionName: string;
+  provider: 'google' | 'openai';
+  model: string;
+  taskType?: string;
+  vectorDatabse: {
+    provider: 'qdrant',
+    collection: string
+  }
   excludePaths?: string[];
   strictRegex?: boolean;
 }
@@ -39,155 +43,104 @@ export async function runInit() {
   }
 
   console.log(chalk.bold("\n📝 GitHub Source Configuration\n"));
-
-  const answers = await prompts([
-    {
-      type: "text",
-      name: "githubOwner",
-      message: "GitHub repository owner",
-      validate: (v) => v.length > 0 || "Owner is required",
-    },
-    {
-      type: "text",
-      name: "githubRepo",
-      message: "GitHub repository name",
-      validate: (v) => v.length > 0 || "Repo name is required",
-    },
-    {
-      type: "text",
-      name: "githubBranch",
-      message: "Branch name",
-      initial: "main",
-    },
-    {
-      type: "text",
-      name: "githubPath",
-      message: "Docs folder path (leave empty for root)",
-      initial: "",
-    },
-    {
-      type: "number",
-      name: "maxFiles",
-      message: "Maximum files to index",
-      initial: 100,
-    },
-    {
-      type: "number",
-      name: "chunkSize",
-      message: "Chunk size (characters)",
-      initial: 1000,
-    },
+  const sourceAnswers = await prompts([
+    { type: 'text', name: 'owner', message: 'GitHub owner' },
+    { type: 'text', name: 'repo', message: 'GitHub repo' },
+    { type: 'text', name: 'branch', message: 'Branch', initial: 'main' },
+  ]);
+  console.log(chalk.bold("\n🔧 Processing Configuration\n"));
+  const processingAnswers = await prompts([
+    { type: 'number', name: 'maxFiles', message: 'Max files', initial: 100 },
+    { type: 'number', name: 'chunkSize', message: 'Chunk size', initial: 1000 },
+    { type: 'number', name: 'chunkOverlap', message: 'Chunk overlap', initial: 200 },
   ]);
 
-  console.log(chalk.bold("\n🤖 Embedding Configuration\n"));
-
+  console.log(chalk.bold("\n🟦 Embedding Configuration\n"));
   const { embeddingProvider } = await prompts({
-    type: "select",
-    name: "embeddingProvider",
-    message: "Embedding provider",
+    type: 'select',
+    name: 'embeddingProvider',
+    message: 'Embedding provider',
     choices: [
-      { title: "Google Gemini", value: "google" },
-      { title: "OpenAI", value: "openai" },
-    ],
-    initial: 0,
+      { title: 'Google', value: 'google' },
+      { title: 'OpenAI', value: 'openai' }
+    ]
   });
 
-  if (embeddingProvider === "google") {
-    const googleConfig = await prompts([
+  let embeddingConfig;
+
+  if (embeddingProvider === 'google') {
+    const google = await prompts([
       {
-        type: "select",
-        name: "taskType",
-        message: "Task type",
+        type: 'select',
+        name: 'taskType',
+        message: 'Task type',
         choices: [
-          { title: "Retrieval Document", value: "RETRIEVAL_DOCUMENT" },
-          { title: "Question Answering", value: "QUESTION_ANSWERING" },
-        ],
-        initial: 1,
+          { title: 'Retrieval Document', value: 'RETRIEVAL_DOCUMENT' },
+          { title: 'Question Answering', value: 'QUESTION_ANSWERING' }
+        ]
       },
       {
-        type: "select",
-        name: "model",
-        message: "Embedding model",
+        type: 'select',
+        name: 'model',
+        message: 'Model',
         choices: [
-          { title: "gemini-embedding-001", value: "gemini-embedding-001" },
-          { title: "text-embedding-004", value: "text-embedding-004" },
-        ],
-        initial: 0,
-      },
+          { title: 'gemini-embedding-001', value: 'gemini-embedding-001' }
+        ]
+      }
     ]);
 
-    Object.assign(answers, {
-      embeddingProvider: "google",
-      embeddingTaskType: googleConfig.taskType,
-      embeddingModel: googleConfig.model,
-    });
-  }
-  if (embeddingProvider === "openai") {
-    const openaiConfig = await prompts({
-      type: "select",
-      name: "model",
-      message: "Embedding model",
+    embeddingConfig = {
+      provider: 'google' as const,
+      taskType: google.taskType,
+      model: google.model
+    };
+  } else {
+    const openai = await prompts({
+      type: 'select',
+      name: 'model',
+      message: 'Model',
       choices: [
-        { title: "text-embedding-3-small (Faster)", value: "text-embedding-3-small" },
-        { title: "text-embedding-3-large (Better)", value: "text-embedding-3-large" },
-      ],
-      initial: 0,
+        { title: 'text-embedding-3-small', value: 'text-embedding-3-small' },
+        { title: 'text-embedding-3-large', value: 'text-embedding-3-large' }
+      ]
     });
 
-    Object.assign(answers, {
-      embeddingProvider: "openai",
-      embeddingModel: openaiConfig.model,
-    });
+    embeddingConfig = {
+      provider: 'openai' as const,
+      model: openai.model
+    };
   }
 
-  console.log(chalk.bold("\n📦 Vector Database Configuration\n"));
-
-  const databaseConfig = await prompts([
-    {
-      type: "text",
-      name: "collectionName",
-      message: "Vector database collection name",
-      initial: `${answers.githubRepo}-docs`,
-    },
-    {
-      type: "confirm",
-      name: "advancedOptions",
-      message: "Configure advanced options?",
-      initial: false,
-    },
-  ]);
-
-  Object.assign(answers, {
-    collectionName: databaseConfig.collectionName,
+  console.log(chalk.bold("\📊 Database Configuration\n"));
+  const dbAnswers = await prompts({
+    type: 'text',
+    name: 'collection',
+    message: 'Collection name',
+    initial: `${sourceAnswers.repo}-docs`
   });
-
-  if (databaseConfig.advancedOptions) {
-    console.log(chalk.bold("\n⚙️  Advanced Options\n"));
-
-    const advanced = await prompts([
-      {
-        type: "list",
-        name: "excludePaths",
-        message: "Exclude paths (comma-separated)",
-        initial: "node_modules,dist,test",
-        separator: ",",
-      },
-      {
-        type: "confirm",
-        name: "strictRegex",
-        message: "Use strict regex filtering?",
-        initial: false,
-      },
-    ]);
-
-    Object.assign(answers, advanced);
-  }
-
+  const finalConfig: IDocsyConfig = {
+    source: {
+      type: 'github',
+      owner: sourceAnswers.owner,
+      repo: sourceAnswers.repo,
+      branch: sourceAnswers.branch
+    },
+    processing: {
+      maxFiles: processingAnswers.maxFiles,
+      chunkSize: processingAnswers.chunkSize,
+      chunkOverlap: processingAnswers.chunkOverlap
+    },
+    embeddings: embeddingConfig,
+    vectorDatabase: {
+      provider: 'qdrant',
+      collection: dbAnswers.collection
+    }
+  };
   const spinner = ora("Creating configuration files...").start();
 
   try {
 
-    await writeConfig(configPath, answers as FullAnswers);
+    await writeConfig(configPath, finalConfig);
     await writeEnvExample(envPath);
 
     spinner.succeed(chalk.green("✨ Docsy initialized successfully!"));
