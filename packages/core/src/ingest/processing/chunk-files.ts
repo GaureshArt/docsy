@@ -54,24 +54,24 @@ function generateChunkId(
  */
 export async function chunkFiles(
   files: RawFile[],
-  options?: { chunkSize?: number; chunkOverlap?: number }
+  options?: { chunkSize?: number; chunkOverlap?: number, githubUrl: string }
 ): Promise<Chunk[]> {
   const chunkSize = options?.chunkSize ?? 1000;
   const chunkOverlap = options?.chunkOverlap ?? 200;
-  
+
   const splitter = new RecursiveCharacterTextSplitter({
     chunkSize,
     chunkOverlap,
     separators: [
-      "\n```",        
-      "\n## ",        
-      "\n### ",       
-      "\n#### ",      
-      "\n\n",         
-      "\n",           
-      ". ",           
-      " ",            
-      "",             
+      "\n```",
+      "\n## ",
+      "\n### ",
+      "\n#### ",
+      "\n\n",
+      "\n",
+      ". ",
+      " ",
+      "",
     ],
   });
 
@@ -93,7 +93,7 @@ export async function chunkFiles(
         id: chunkId,
         content: doc.pageContent,
         metadata: {
-          filePath: file.path,
+          filePath: `${options?.githubUrl}/tree/main/${file.path}`,
           fileSha: file.sha,
           chunkIndex: index,
           totalChunks: docs.length,

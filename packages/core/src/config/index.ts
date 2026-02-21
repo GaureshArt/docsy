@@ -6,7 +6,6 @@ export interface DocsyConfig {
     owner: string;
     repo: string;
     branch?: string;
-    path?: string;
   };
   processing: {
     maxFiles?: number;
