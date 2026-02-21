@@ -1,6 +1,6 @@
-import path from "path";
 import { getVectorDB } from "../vector-database/registry.js";
 import { Point } from "../vector-database/qdrant/qdrant.types.js";
+import type { Chunk } from "../ingest/sources/github/github.types.js";
 import { QueryConfig } from "./types.js";
 
 export async function querySearch(queryVector: number[], config: QueryConfig): Promise<Point[]> {
@@ -10,33 +10,35 @@ export async function querySearch(queryVector: number[], config: QueryConfig): P
     const result = await vectorDb.query(config.vectorDatabase.collection, {
         query: queryVector,
         limit: 5,
-        with_payload: true
+        with_payload: true,
     });
 
     const points: Point[] = result.points
         .filter(p => p.payload !== null && p.payload !== undefined)
-        .map(p => ({
-            id: String(p.id),
-            vector: (Array.isArray(p.vector) && Array.isArray(p.vector[0])
-                ? (p.vector as number[][])[0]
-                : (p.vector as number[])) ?? [] as number[],
-            payload: {
-                id: String(p.payload!.id ?? ''),
-                content: String(p.payload!.content ?? ''),
-                metadata: {
-                    filePath: String(p.payload!.filePath ?? ''),
-                    fileSha: String(p.payload!.fileSha ?? ''),
-                    chunkIndex: Number(p.payload!.chunkIndex ?? 0),
-                    totalChunks: Number(p.payload!.totalChunks ?? 0),
-                    previousChunkId: p.payload!.previousChunkId
-                        ? String(p.payload!.previousChunkId)
-                        : null,
-                    nextChunkId: p.payload!.nextChunkId
-                        ? String(p.payload!.nextChunkId)
-                        : null,
+        .map(p => {
+            const meta = (p.payload!.metadata ?? {}) as Partial<Chunk["metadata"]>;
+            return {
+                id: String(p.id),
+                vector: (Array.isArray(p.vector) && Array.isArray(p.vector[0])
+                    ? (p.vector as number[][])[0]
+                    : (p.vector as number[])) ?? [] as number[],
+                payload: {
+                    id: String(p.payload!.id ?? ''),
+                    content: String(p.payload!.content ?? ''),
+                    metadata: {
+                        filePath: String(meta.filePath ?? ''),
+                        fileSha: String(meta.fileSha ?? ''),
+                        chunkIndex: Number(meta.chunkIndex ?? 0),
+                        totalChunks: Number(meta.totalChunks ?? 0),
+                        previousChunkId: meta.previousChunkId != null
+                            ? String(meta.previousChunkId)
+                            : null,
+                        nextChunkId: meta.nextChunkId != null
+                            ? String(meta.nextChunkId)
+                            : null,
+                    }
                 }
-            }
-        }));
-
+            };
+        });
     return points;
 }
