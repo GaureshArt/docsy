@@ -1,7 +1,7 @@
 export interface RepositoryConfig {
-    owner:string;
-    repo:string;
-    branch:string;
+    owner: string;
+    repo: string;
+    branch: string;
 }
 
 
@@ -9,11 +9,11 @@ export interface GitTreeResponse {
     sha: string;
     url?: string;
     tree: GitTreeItem[];
-    truncated:boolean;
+    truncated: boolean;
 }
 export interface FetchGitTreeResponse {
-    tree:GitTreeResponse;
-    repository:RepositoryConfig;
+    tree: GitTreeResponse;
+    repository: RepositoryConfig;
 }
 export interface GitTreeItem {
     path: string;
@@ -26,35 +26,35 @@ export interface GitTreeItem {
 export interface PriorityRule {
     score: number;
     match: (path: string, segments: string[]) => boolean;
-  }
-  
+}
+
 
 export interface RawFile {
     path: string;
     content: string;
-    url: string ;           
-    sha: string;         
+    url: string;
+    sha: string;
     size: number;
-    fetchedAt: Date;       
+    fetchedAt: Date;
 }
 
 
-    export interface Chunk {
-        id: string;
-        content: string;
-        metadata: {
+export interface Chunk {
+    id: string;
+    content: string;
+    metadata: {
         filePath: string;
         fileSha: string;
         chunkIndex: number;
         totalChunks: number;
         previousChunkId: string | null;
         nextChunkId: string | null;
-        };
-    }
+    };
+}
 
-    export interface EmbedChunk extends Chunk{
-        embeddings:number[] | undefined,
-        embeddingModel:string;
-        
-    }
+export interface EmbedChunk extends Chunk {
+    embeddings: number[] | undefined,
+    embeddingModel: string;
+
+}
 
