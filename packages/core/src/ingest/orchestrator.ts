@@ -79,6 +79,7 @@ export async function ingest(config: DocsyConfig): Promise<void> {
   const chunks = await chunkFiles(cleanedFiles, {
     chunkSize: config.processing.chunkSize,
     chunkOverlap: config.processing.chunkOverlap,
+    githubUrl
   });
   console.log(`Created ${chunks.length} chunks`);
 
