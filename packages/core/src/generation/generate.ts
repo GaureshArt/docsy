@@ -3,12 +3,15 @@ import { QueryConfig } from "../retrieval/types.js";
 import { Point } from "../vector-database/qdrant/qdrant.types.js";
 import { modelRegistry } from "./model-registry.js";
 import { SYSTEM_PROMPT } from "../prompts/system.js";
-import { USER_PROMPT } from "../prompts/user.js";
 
 function formatContext(points: Point[]): string {
     return points
-        .map((p, i) => `[${i + 1}] ${p.payload.content}`)
-        .join('\n\n---\n\n');
+        .map((p, i) => {
+            return `--- SOURCE [${i + 1}] ---
+            LINK: ${p.payload.metadata.filePath}
+            CONTENT: ${p.payload.content}`;
+        })
+        .join('\n\n');
 }
 
 /**
@@ -21,12 +24,24 @@ function formatContext(points: Point[]): string {
 export async function generate(points: Point[], config: QueryConfig) {
     const context = formatContext(points);
     const system = config.systemPrompt ?? SYSTEM_PROMPT;
-    const userText = config.userPrompt ?? USER_PROMPT.replace('{{query}}', config.query).replace('{{context}}', context)
-
+    const userQuery = config.messages.at(-1)?.content
     return streamText({
         model: modelRegistry(config.llmConfig),
         maxRetries: config.llmConfig.maxRetries ?? 1,
         system,
-        prompt: userText,
+        messages: [
+            ...config.messages,
+            {
+                role: 'user',
+                content: `
+                KNOWLEDGE BASE:
+                ${context}
+
+                USER QUERY:
+                ${userQuery}
+                
+               REMINDER: You MUST include the "Sources:" section with the actual links at the end of your response.`
+            }
+        ],
     }).toUIMessageStreamResponse();
 }
