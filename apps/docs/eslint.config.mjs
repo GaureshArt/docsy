@@ -4,6 +4,13 @@ import { nextJsConfig } from '@workspace/eslint-config/next.js'
 export default [
   ...nextJsConfig,
   {
-    ignores: ['.next/**', 'node_modules/**', 'dist/**', '.turbo/**', 'out/**'],
+    ignores: [
+      '.next/**',
+      'node_modules/**',
+      'dist/**',
+      '.turbo/**',
+      'out/**',
+      'public/_pagefind/**',
+    ],
   },
 ]
