@@ -1,65 +1,134 @@
 ---
 title: Welcome to Docsy
-description: Headless RAG for TypeScript developers
+description: Headless RAG for TypeScript developers who build with code, not dashboards.
 ---
+
+import { Callout, Cards } from 'nextra/components'
 
 # Welcome to Docsy
 
-Docsy is a **headless RAG component** designed for developers who want to add AI-powered documentation chat to their applications without fighting complex frameworks.
+Docsy is a **headless RAG architecture** built specifically for TypeScript developers. It provides the core infrastructure to add AI-powered semantic search and chat directly to your application, without the overhead of Python frameworks or the lock-in of enterprise SaaS platforms.
+
+If you have built a SaaS product or an impressive portfolio and already have a `README.md` or a few scattered markdown files in your repository, Docsy turns them into an intelligent knowledge base in minutes.
+
+<Callout type="info">
+  **Alpha Release:** The core foundation is solid and naive RAG works in
+  production. Advanced retrieval patterns are currently in active development.
+</Callout>
+
+---
 
 ## The Problem
 
-Building a documentation chatbot shouldn't require weeks of research, vendor comparisons, and infrastructure decisions. You just want users to ask questions and get accurate answers from your docs.
+You have built something great. You have already written the necessary explanations—they live in your `README.md` and a handful of `.md` files directly inside your GitHub repository.
 
-Yet every solution either:
+But right now, your users have to leave your application, navigate to your GitHub repo, and dig through fragmented markdown files just to find answers.
 
-- Forces you into a no-code dashboard (loses flexibility)
-- Requires learning Python frameworks (you're a TypeScript dev)
-- Locks you into their LLM/vector DB (vendor lock-in)
-- Takes days to set up (just to try it out)
+You want to give your users an intelligent chatbot to answer their questions instantly on your landing page, but you **do not** want the overhead of building, styling, and maintaining a dedicated `/docs` website.
 
-## Our Vision
+Building a custom documentation chatbot for this exact use case currently forces you into terrible compromises. It usually requires:
 
-**Docsy should feel like adding authentication with Clerk** - install, configure, done.
+- **Over-engineering:** Spending weeks learning complex machine learning frameworks for a targeted problem.
+- **Vendor Lock-in:** Paying for expensive, inflexible no-code dashboards that ruin your seamless UI.
+- **Context-Switching:** Forcing you to write Python backends when your entire stack is TypeScript.
+- **Infrastructure Bloat:** Provisioning complex vector databases just to parse a few static markdown files.
 
-We're building the developer-first RAG layer that:
+Every existing solution forces you to choose between building a bloated documentation site you don't actually want, or using the wrong programming language for your stack.
 
-- Installs via npm in seconds
-- Configures with TypeScript (type-safe, autocomplete)
-- Integrates with tools you already use (Vercel AI SDK, Next.js)
-- Lets you swap providers without rewriting code
-- Stays out of your way
+---
 
-## What Docsy Is
+## The Vision
 
-A **modular RAG pipeline** you control completely:
+<Callout type="default">
+  **Docsy should feel like adding authentication with Clerk.** You install it,
+  configure your GitHub repository, and it just works.
+</Callout>
 
-- CLI for ingestion (`docsy ingest`)
-- Core library for retrieval/generation
-- TypeScript-first with full type safety
-- Open source (MIT license)
-- Built for the Next.js/Vercel ecosystem
+We are building the developer-first RAG layer that:
 
-## What Docsy Isn't
+- Installs via package manager in under 60 seconds.
+- Configures entirely with TypeScript, ensuring full type safety and autocomplete.
+- Integrates seamlessly with your existing stack (Next.js, Vercel AI SDK).
+- Allows you to swap LLMs, embedding models, and vector stores without rewriting core logic.
+- Stays out of your way and lets you own the UI and the infrastructure.
 
-- Not a SaaS platform (you own your infrastructure)
-- Not a UI library (bring your own components)
-- Not a generic AI wrapper (opinionated for docs)
-- Not enterprise software (built by developers, for developers)
-
-## Current State
-
-**Alpha** - The foundation works. Naive RAG is production-ready. Advanced patterns are in development.
-
-We're building in public. Expect rough edges, but also expect rapid iteration based on real developer feedback.
+---
 
 ## Who This Is For
 
-You're a TypeScript/Next.js developer who:
+<Callout type="warning">
+  Docsy currently works best with **GitHub-based documentation**. Live website
+  scraping for deployed documentation sites is in active development.
+</Callout>
 
-- Has documentation that needs AI chat
-- Wants control over your RAG pipeline
-- Prefers code over dashboards
-- Values simplicity over enterprise features
+Docsy is engineered for developers who:
 
-If that's you, welcome. Let's build something useful together.
+- Build SaaS or portfolio projects and want an AI chatbot without maintaining a full `/docs` routing system.
+- Maintain open-source projects with markdown docs scattered across repositories.
+- Prefer writing code in a modern editor over clicking through SaaS dashboards.
+- Need to fetch content directly from their GitHub repositories to power semantic Q&A.
+
+---
+
+## Capabilities
+
+    ### Available Today
+
+    - **GitHub Ingestion:** Intelligent filtering and parsing of repository markdown files.
+    - **Markdown-Aware Chunking:** Preserves code blocks, headers, and document structure.
+    - **Pluggable Embeddings:** Out-of-the-box support for Gemini and OpenAI.
+    - **Vector Storage:** Native integration with Qdrant.
+    - **Semantic Retrieval:** Fast vector search with streaming responses.
+    - **Vercel AI SDK:** Native `useChat` compatibility for modern React apps.
+    - **CLI Tooling:** Ingest github files from your cli.
+
+### In Development
+
+- Live website scraping for deployed documentation sites.
+- Query optimization and reranking pipelines.
+- Advanced RAG patterns (Sequential, Self-RAG, Multi-query).
+- Extended vector database support (Pinecone, Supabase, Upstash).
+
+---
+
+## What Docsy Is Not
+
+<Callout type="error">
+  Docsy is not a SaaS platform or a UI library. You completely own your data,
+  infrastructure, and presentation layer.
+</Callout>
+
+- **Not a SaaS platform:** You hold the API keys. You own the vector database.
+- **Not a UI library:** We provide the retrieval hooks; you build the interface.
+- **Not enterprise software:** No mandatory sales calls, no bloated compliance dashboards.
+- **Not a generic LLM wrapper:** Highly opinionated and optimized specifically for documentation workflows.
+
+---
+
+## Get Started
+
+Add intelligent search to your application today.
+
+<Cards>
+  <Cards.Card
+    title="Getting Started"
+    description="Install and configure Docsy in under 5 minutes."
+    href="/getting-started"
+  />
+  <Cards.Card
+    title="Core Concepts"
+    description="Understand the architecture behind the RAG pipeline."
+    href="/core-concepts"
+  />
+</Cards>
+
+---
+
+<Callout type="default">
+  **Building in public:** We are iterating fast, listening to feedback, and
+  shipping daily. Check out the GitHub repository to see our progress.
+</Callout>
+
+---
+
+_Built for developers who value clean code and intelligent search._
