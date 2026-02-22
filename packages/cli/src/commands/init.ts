@@ -5,27 +5,12 @@ import fs from "node:fs";
 import chalk from "chalk";
 import { writeConfig } from "../utils/write-config.js";
 import { writeEnvExample } from "../utils/write-env-example.js";
-import { DocsyConfig } from "../../../core/dist/index.js";
+import { DocsyConfig } from "@gaureshart/docsy-core";
 
 
 
-export interface FullAnswers {
-  githubOwner: string;
-  githubRepo: string;
-  githubBranch: string;
-  githubPath: string;
-  maxFiles: number;
-  chunkSize: number;
-  provider: 'google' | 'openai';
-  model: string;
-  taskType?: string;
-  vectorDatabse: {
-    provider: 'qdrant',
-    collection: string
-  }
-  excludePaths?: string[];
-  strictRegex?: boolean;
-}
+
+
 export async function runInit() {
   const cwd = process.cwd();
   const configPath = path.join(cwd, "docsy.config.ts");
