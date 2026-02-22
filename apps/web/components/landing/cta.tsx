@@ -10,18 +10,18 @@ export function Cta() {
       <Link href={GITHUB_REPO_LINK} className="w-full  sm:w-auto ">
         <Button
           variant={'secondary'}
-          className="bg-white cursor-pointer border border-zinc-600 w-full sm:w-auto text-sm sm:text-base"
+          className="cursor-pointer border border-zinc-600 w-full sm:w-auto text-sm sm:text-base"
         >
           <GithubIcon />
           <span>View On Github</span>
         </Button>
       </Link>
-      <Link href={ROUTES.ROADMAP}>
+      <Link href={ROUTES.DOCS}>
         <Button
           variant={'link'}
           className="cursor-pointer text-sm sm:text-base w-full sm:w-auto"
         >
-          See Roadmap
+          Docs
         </Button>
       </Link>
     </div>
