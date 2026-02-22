@@ -1,11 +1,5 @@
 import type { Metadata } from 'next'
-import {
-  Fragment_Mono,
-  Geist,
-  Geist_Mono,
-  JetBrains_Mono,
-  Press_Start_2P,
-} from 'next/font/google'
+import { Fragment_Mono, JetBrains_Mono, Press_Start_2P } from 'next/font/google'
 import 'nextra-theme-docs/style.css'
 import '@workspace/ui/globals.css'
 import { Footer, Layout } from 'nextra-theme-docs'
