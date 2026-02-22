@@ -1,12 +1,8 @@
+export const USER_PROMPT = `
+        KNOWLEDGE BASE:
+        {{context}}
 
-export const USER_PROMPT = `## Question
-
-{{query}}
-
-## Documentation Context
-
-{{context}}
-
-Answer the question strictly based on the documentation context provided above.
-If code examples are present in the context, include them in your answer.
-`
+        USER QUERY:
+        {{query}}
+        
+       REMINDER: You MUST include the "Sources:" section with the actual links at the end of your response. in this format strictly: [number](LINK)`

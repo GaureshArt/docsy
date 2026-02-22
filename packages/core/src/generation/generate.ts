@@ -1,17 +1,18 @@
-import { streamText } from "ai";
-import { QueryConfig } from "../retrieval/types.js";
-import { Point } from "../vector-database/qdrant/qdrant.types.js";
-import { modelRegistry } from "./model-registry.js";
-import { SYSTEM_PROMPT } from "../prompts/system.js";
+import { streamText } from 'ai'
+import { QueryConfig } from '../retrieval/types.js'
+import { Point } from '../vector-database/qdrant/qdrant.types.js'
+import { modelRegistry } from './model-registry.js'
+import { SYSTEM_PROMPT } from '../prompts/system.js'
+import { USER_PROMPT } from '../prompts/user.js'
 
 function formatContext(points: Point[]): string {
     return points
         .map((p, i) => {
             return `--- SOURCE [${i + 1}] ---
             LINK: ${p.payload.metadata.filePath}
-            CONTENT: ${p.payload.content}`;
+            CONTENT: ${p.payload.content}`
         })
-        .join('\n\n');
+        .join('\n\n')
 }
 
 /**
@@ -22,26 +23,17 @@ function formatContext(points: Point[]): string {
  * @returns Async text stream of the generated response
  */
 export async function generate(points: Point[], config: QueryConfig) {
-    const context = formatContext(points);
-    const system = config.systemPrompt ?? SYSTEM_PROMPT;
-    const userQuery = config.messages.at(-1)?.content
+    const context = formatContext(points)
+    const system = config.systemPrompt ?? SYSTEM_PROMPT
+    const userPrompt = USER_PROMPT.replace('{{context}}', context).replace(
+        '{{query}}',
+        config.query,
+    )
     return streamText({
         model: modelRegistry(config.llmConfig),
         maxRetries: config.llmConfig.maxRetries ?? 1,
         system,
-        messages: [
-            ...config.messages,
-            {
-                role: 'user',
-                content: `
-                KNOWLEDGE BASE:
-                ${context}
-
-                USER QUERY:
-                ${userQuery}
-                
-               REMINDER: You MUST include the "Sources:" section with the actual links at the end of your response.`
-            }
-        ],
-    }).toUIMessageStreamResponse();
+        prompt: userPrompt,
+        temperature: config.llmConfig.temperature
+    }).toUIMessageStreamResponse()
 }
