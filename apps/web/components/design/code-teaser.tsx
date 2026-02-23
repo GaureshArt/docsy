@@ -1,4 +1,5 @@
 'use client'
+import { Button } from '@workspace/ui/components/button'
 import React, { useState } from 'react'
 
 type PackageManager = 'npm' | 'yarn' | 'pnpm'
@@ -17,20 +18,20 @@ const CodeTeaser = () => {
         <div className="flex items-center gap-2 sm:gap-3 px-3 sm:px-4 py-2 sm:py-2.5 border-b border-gray-100">
           <div className="flex gap-1.5 sm:gap-2">
             {(['npm', 'yarn', 'pnpm'] as const).map((tab) => (
-              <button
+              <Button
                 key={tab}
                 onClick={() => setActiveTab(tab)}
                 className={`
-                  px-2 sm:px-3 py-1 text-xs font-medium font-fragment-mono rounded transition-colors
-                  ${
-                    activeTab === tab
-                      ? 'bg-black text-white'
-                      : 'text-gray-500 hover:text-gray-900 hover:bg-gray-50 cursor-pointer'
-                  }
+                  px-2 sm:px-3 py-1 text-xs font-medium font-jetbrains-mono  transition-colors
+               x   ${
+                 activeTab === tab
+                   ? 'bg-black text-white'
+                   : 'text-gray-500 hover:text-gray-900  hover:bg-gray-50 cursor-pointer'
+               }
                 `}
               >
                 {tab}
-              </button>
+              </Button>
             ))}
           </div>
         </div>

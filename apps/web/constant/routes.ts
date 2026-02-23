@@ -1,4 +1,4 @@
 export const ROUTES = {
   HOME: '/',
-  DOCS: '/docs',
+  DOCS: 'https://docs.docsy.live/',
 } as const;
