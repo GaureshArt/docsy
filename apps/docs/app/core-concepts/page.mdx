@@ -1,0 +1,116 @@
+---
+title: Core Concepts
+description: How Docsy works - the essentials
+---
+
+import { Callout } from 'nextra/components'
+
+# Core Concepts
+
+Understanding Docsy's three-phase approach to intelligent documentation search.
+
+---
+
+## How Docsy Works
+
+Docsy transforms your GitHub docs into an AI-powered Q&A system through three phases:
+
+### **1. Ingest (Setup)**
+
+Run once to prepare your docs:
+
+```bash
+docsy ingest
+```
+
+**What happens:**
+
+- Fetches markdown from your GitHub repo
+- Splits files into chunks (~1000 characters each)
+- Converts chunks to vectors using Gemini/OpenAI
+- Stores in Qdrant vector database
+
+**When:** Initial setup, or when docs change.
+
+---
+
+### **2. Retrieve (Per Question)**
+
+When a user asks a question:
+
+- Converts question to a vector
+- Finds 5 most similar doc chunks
+- Returns relevant content with scores
+
+---
+
+### **3. Generate (Per Question)**
+
+Docsy sends retrieved docs + question to an LLM:
+
+- Formats chunks as context
+- Asks LLM to answer using only that context
+- Streams response token-by-token
+- Includes citations to source files
+
+---
+
+## Key Concepts
+
+### **Vectors**
+
+Your docs are converted to vectors (embeddings) that capture meaning. Similar docs have similar vectors, enabling semantic search.
+
+### **Semantic Search**
+
+Unlike keyword search, semantic search understands intent:
+
+- "deploy my app" matches "deployment guide" <span className='text-red-700'>(not litteraly just an analogy)</span>
+- Finds relevant docs even with different wording
+
+### **Retrieve Chunks**
+
+LLMs can't read all your docs at once. Docsy finds the `k` most relevant chunks to fit in the context window.
+
+### **Citations**
+
+Every answer links back to source files, so users can verify information and read more.
+
+---
+
+## Why This Approach?
+
+<ul>
+  <li>**Accurate** - LLM only sees relevant docs, reducing hallucination</li>
+  <li>**Fast** - Vector search is instant, streaming feels responsive</li>
+  <li>**Fresh** - Re-run `docsy ingest` anytime docs change </li>
+  <li>**Transparent** - Citations show exactly where answers come from</li>
+</ul>
+
+## What You Configure
+
+```typescript
+defineConfig({
+  source: {
+    /* which repo */
+  },
+  processing: {
+    /* chunk size */
+  },
+  embeddings: {
+    /* which model */
+  },
+  vectorDatabase: {
+    /* collection name */
+  },
+})
+```
+
+That's it. Docsy handles the rest.
+
+---
+
+<Callout>
+  **New to RAG?** Think of it like Google (retrieve docs) + ChatGPT (generate
+  answer) combined.
+</Callout>
