@@ -13,6 +13,7 @@ export interface QueryConfig {
         collection: string;
         provider: 'qdrant'
     };
+    queryOptimization: LlmConfig;
     messages: ModelMessage[];
     embeddings: EmbeddingConfig
 }
