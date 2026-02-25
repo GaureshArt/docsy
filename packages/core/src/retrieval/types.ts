@@ -1,6 +1,7 @@
 import { ModelMessage } from "ai";
 import { LlmConfig } from "../generation/types.js";
 import { EmbeddingConfig } from "../ai/types.js";
+import { RankerConfig } from "../ai/ranker/types.js";
 
 export type embeddingProvider = "gemini"
 export type patternTypes = "naive"
@@ -14,6 +15,7 @@ export interface QueryConfig {
         provider: 'qdrant'
     };
     queryOptimization: LlmConfig;
+    rankerConfig: RankerConfig;
     messages: ModelMessage[];
     embeddings: EmbeddingConfig
 }
