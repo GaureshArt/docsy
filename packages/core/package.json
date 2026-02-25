@@ -17,8 +17,10 @@
   "license": "MIT",
   "packageManager": "pnpm@10.4.1",
   "dependencies": {
+    "@ai-sdk/amazon-bedrock": "^4.0.64",
     "@ai-sdk/google": "^3.0.29",
     "@ai-sdk/openai": "^3.0.29",
+    "@ai-sdk/togetherai": "^2.0.33",
     "@google/genai": "^1.39.0",
     "@langchain/core": "^1.1.18",
     "@langchain/textsplitters": "^1.0.1",
@@ -30,6 +32,14 @@
     "octokit": "^5.0.5",
     "openai": "^6.22.0",
     "uuid": "^13.0.0"
+  },
+  "peerDependencies": {
+    "@ai-sdk/cohere": "^3.0.21"
+  },
+  "peerDependenciesMeta": {
+    "@ai-sdk/cohere": {
+      "optional": true
+    }
   },
   "devDependencies": {
     "@types/node": "^25.0.10",
