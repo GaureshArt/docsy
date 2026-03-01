@@ -4,8 +4,9 @@ import { querySearch } from "../retrieval/query-search.js";
 import { QueryConfig } from "../retrieval/types.js";
 
 export default async function naiveRag(config: QueryConfig) {
-    const embededquery = await queryEmbed(config.query, config);
-    const retrievedPoints = await querySearch(embededquery, config);
-    const res = await generate(retrievedPoints, config);
+    console.log("naiveRag is called");
+    const embededqueries = await queryEmbed([config.query], config);
+    const retrievedPoints = await Promise.all(embededqueries.map(emb => querySearch(emb, config)))
+    const res = await generate(retrievedPoints.flat(), config);
     return res;
 }
