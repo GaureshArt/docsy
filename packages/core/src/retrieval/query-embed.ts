@@ -2,47 +2,42 @@ import { getEmbedder } from "../ai/embeddings/registry.js";
 import { QueryConfig } from "./types.js";
 
 /**
- * Generates an embedding vector for a given query string.
+ * Generates embedding vectors for one or more query strings.
  *
- * This function uses the configured embedding provider (currently Gemini)
- * to convert a natural language query into a numerical vector representation.
- * The resulting vector can be used for semantic search, similarity comparison,
- * or retrieval-augmented generation (RAG).
+ * Converts natural language queries into numerical vector representations
+ * using the configured embedding provider. The resulting vectors can be used
+ * for semantic search, similarity comparison, or retrieval-augmented generation (RAG).
  *
-
- * @param {string} query
- * The input text that needs to be embedded.
- *
- * @param {QueryConfig} config
- * Configuration object containing embedding-related settings.
- *
- *
- * @returns {Promise<number[]>}
- * A promise that resolves to a numerical embedding vector representing the query.
- *
- * @throws 
- * Throws an error if the embedding generation fails or returns no vector.
+ * @param queries - Array of input text strings to embed
+ * @param config - Query configuration containing embedding provider settings
+ * @returns Promise resolving to array of embedding vectors (one per query)
+ * @throws Error if embedding generation fails or returns no vectors
  *
  * @example
- * ```ts
- * const vector = await queryEmbed("How does vector search work?", {
-    embeddings:{
-        provider:'gemini',
-        apikey:process.env.GEMINI_API_KEY,
-        model:'gemini-embedding-001'
-    }
- * });
- * ```
+ * // Single query
+ * const [vector] = await queryEmbed(
+ *   ["How does vector search work?"],
+ *   { embeddings: { provider: 'google', model: 'text-embedding-004' } }
+ * );
+ *
+ * @example
+ * // Multiple queries
+ * const vectors = await queryEmbed(
+ *   ["How to deploy?", "What is deployment?", "Deploy production app"],
+ *   { embeddings: { provider: 'google', model: 'text-embedding-004' } }
+ * );
+ * // Returns: [[0.1, 0.2, ...], [0.3, 0.4, ...], [0.5, 0.6, ...]]
  */
 export async function queryEmbed(
-    query: string,
+    queries: string[],
     config: QueryConfig
-): Promise<number[]> {
+): Promise<number[][]> {
     const embedder = getEmbedder(config.embeddings);
-    const embeddedQuery = await embedder([query]);
-    const vector = embeddedQuery.at(0);
-    if (!vector) {
-        throw new Error('Query Embedding failed. Try again!');
+    const embeddings = await embedder(queries);
+
+    if (!embeddings || embeddings.length === 0) {
+        throw new Error('Query embedding failed. Try again!');
     }
-    return vector;
+
+    return embeddings;
 }
